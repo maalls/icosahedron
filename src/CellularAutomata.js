@@ -297,17 +297,20 @@ export class CellularAutomata {
 
     setColor(colors, i, color) {
 
-        console.log("setting", color.x, color.y, color.z);
+        
+
+        //let linear = color.convertSRGBToLinear ();
+        //console.log("setting", color.toArray());
         let ind = (i - 1)*9;
-        colors[ind + 0] = color.x;
-        colors[ind + 1] = color.y;
-        colors[ind + 2] = color.z;
-        colors[ind + 3] = color.x;
-        colors[ind + 4] = color.y;
-        colors[ind + 5] = color.z;
-        colors[ind + 6] = color.x;
-        colors[ind + 7] = color.y;
-        colors[ind + 8] = color.z;
+        colors[ind + 0] = color;
+        colors[ind + 1] = 0;
+        colors[ind + 2] = 0;
+        colors[ind + 3] = color;
+        colors[ind + 4] = 0;
+        colors[ind + 5] = 0;
+        colors[ind + 6] = color;
+        colors[ind + 7] = 0;
+        colors[ind + 8] = 0;
 
     }
 

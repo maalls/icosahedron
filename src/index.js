@@ -1,7 +1,7 @@
 import * as THREE from "three";
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import * as TWEEN from 'tween';
-import { CellularAutomata  } from "./CellularAutomata";
+import { CellularAutomata } from "./CellularAutomata";
 
 
 let scene = new THREE.Scene();
@@ -31,61 +31,45 @@ for (let i = 0; i < count / 3; i++) {
     if (i % ca.facePerZone + 1 == 1) {
         c.random().multiplyScalar(0.5).addScalar(0.5);
     }
-    colors.push(0,0,0,0,0,0,0,0,0);
-    uv.push(
-        (0.067 + i) / max, 0.25,
-        (0.933 + i) / max, 0.25,
-        (0.5 + i) / max, 1
-    );
+    colors.push(0, 0, 0, 0, 0, 0, 0, 0, 0);
+    
 }
-c.set(10,0,0);
-ca.setColor(colors, 1, c);
+let col = new THREE.Color();
+//col.setRGB(10, 0, 0);
+ca.setColor(colors, 1, 1);
+
+
 
 g.setAttribute("color", new THREE.Float32BufferAttribute(colors, 3));
 //g.setAttribute("uv", new THREE.Float32BufferAttribute(uv, 2));
 
-let m = new THREE.MeshBasicMaterial({  vertexColors: true });
+let m = new THREE.MeshBasicMaterial({ vertexColors: true });
 let o = new THREE.Mesh(g, m);
 scene.add(o);
-console.log(m.map);
+
+
 
 renderer.setAnimationLoop(_ => {
     renderer.render(scene, camera);
 })
 
-function makeNumbers() {
-    let c = numbers;
-    let ctx = c.getContext("2d");
-    ctx.fillStyle = "#fff";
-    ctx.fillRect(0, 0, c.width, c.height);
-
-    ctx.textAlign = "center";
-    ctx.textBaseline = "middle";
-    ctx.fillStyle = "#000";
-    ctx.font = 'bold 10px Arial';
-    let step = 8192 / max;
-    let start = step * 0.5;
-
-    for (let i = 0; i < count; i++) {
-        //console.log("processing ", i);
-        ctx.fillText(i + 1, start + step * i, 32);
-    }
-
-    return new THREE.CanvasTexture(c);
-}
 
 function update() {
 
     let newColors = [];
-    for(let i = 1; i <= ca.faceCount; i++) {
+    for (let i = 1; i <= ca.faceCount; i++) {
 
-        let  color = ca.getColor(colors, i);
+        let color = ca.getColor(colors, i);
         //console.log('col',ca.faceCount, i, color);
         // get the color value, divide by 4
-        let newColor = Math.round(color * 0.95);
+        let newColor = color / 10 * 9;
 
-        c.set(newColor, 0, 0);
-        ca.setColor(newColors, i, c);
+        ca.getNeigbors(i).forEach(el => {
+            newColor += ca.getColor(colors, el) / 10;
+        });
+
+        //c.set(newColor, 0, 0);
+        ca.setColor(newColors, i, newColor);
         /*let neighbors = ca.getNeigbors(i);
         neighbors.push(i);
         neighbors.forEach(el => {
@@ -109,12 +93,21 @@ const animate = (t) => {
 
 
     update();
-    
+
     //TWEEN.update(t);
     window.requestAnimationFrame(animate);
 }
 
 //animate();
 
-//update();
-//update();
+update();
+update();
+update();
+update();
+update();
+update();
+update();
+update();
+update();
+update();
+update();

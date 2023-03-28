@@ -47,6 +47,17 @@ export class CellularAutomata {
         return this.zone <= 5 || (this.zone > 10 && this.zone <= 15);
     }
 
+    getNeigborCount(colors, i) {
+        let neighbor = 0;
+        this.getNeigbors(i).forEach(el => {
+            neighbor += this.getColor(colors, el);
+        });
+
+        return neighbor;
+
+    }
+
+
     getNeigbors(i) {
         return this.neighbors[i];
     }
@@ -55,246 +66,267 @@ export class CellularAutomata {
 
         this.neighbors = [];
 
-        for(let i = 1; i <= this.faceCount; i++) {
+        for (let i = 1; i <= this.faceCount; i++) {
+            //console.log('check2',i, leftNeighbor);
+            //console.log(i, leftNeighbor, rightNeighbor, bottomNeighbor);
+            //console.log(i, leftNeighbor, rightNeighbor, bottomNeighbor);
+            this.neighbors[i] = this.computeNeigbors(i);
+        }
+    }
 
-            this.zone = Math.floor((i - 1) / this.facePerZone) + 1;
-            this.subIndex = i - (this.zone - 1) * this.facePerZone;
-            let diff = this.subIndex;
-            this.levelSize = this.baseSize;
-            this.level = 0;
-            this.levelIndex = this.subIndex;
-            while (diff > 0) {
-                this.level++;
-                diff -= this.levelSize;
-                if (this.levelIndex - this.levelSize > 0) {
-                    this.levelIndex = this.levelIndex - this.levelSize;
-                    this.levelSize -= 2;
+    computeNeigbors(i) {
+        this.zone = Math.floor((i - 1) / this.facePerZone) + 1;
+        this.subIndex = i - (this.zone - 1) * this.facePerZone;
+        let diff = this.subIndex;
+        this.levelSize = this.baseSize;
+        this.level = 0;
+        this.levelIndex = this.subIndex;
+        while (diff > 0) {
+            this.level++;
+            diff -= this.levelSize;
+            if (this.levelIndex - this.levelSize > 0) {
+                this.levelIndex = this.levelIndex - this.levelSize;
+                this.levelSize -= 2;
+            }
+
+
+
+        }
+        let neighbors = [];
+        let isOnLeft = null;
+        let isOnRight = null;
+        let isOnBottom = null;
+        if (this.levelIndex == 1) {
+            isOnLeft = true;
+        }
+        else {
+            isOnLeft = false;
+        }
+
+        if (this.level == 1 && this.subIndex % 2 == 1) {
+            isOnBottom = true;
+        }
+        else {
+            isOnBottom = false;
+        }
+
+        if (this.levelSize == this.levelIndex) {
+            isOnRight = true;
+        }
+        else {
+            isOnRight = false;
+        }
+        this.l(i, isOnLeft, isOnRight, isOnBottom, this.level);
+
+        let leftNeighbor = 0;
+        let rightNeighbor = null;
+        let bottomNeighbor = null;
+
+        // we will solve the ones on the left border, then right border, then bottom border
+        // the for the one inside
+
+        if (isOnRight) {
+
+            // bottom
+            let target = zoneMap[this.zone][2];
+            if (this.isInRegularZone(this.zone)) {
+                bottomNeighbor = (target - 1) * this.facePerZone + (this.baseSize - 2 * this.level + 2);
+            }
+            else {
+                bottomNeighbor = (target - 1) * this.facePerZone;
+                // get the inverse level i.e. level 1 will be top level
+                let targetLevel = this.zoneHeight - this.level + 1;
+                //console.log("tl", i, targetLevel);
+                let s = this.baseSize;
+                for (let j = 0; j < targetLevel; j++) {
+                    bottomNeighbor += s;
+                    s = s - 2;
                 }
 
-
-
             }
-            let neighbors = [];
-            let isOnLeft = null;
-            let isOnRight = null;
-            let isOnBottom = null;
-            if (this.levelIndex == 1) {
-                isOnLeft = true;
+
+            // left
+            if (!isOnBottom) {
+
+                leftNeighbor = i - this.levelSize - 1;
+
             }
             else {
-                isOnLeft = false;
-            }
 
-            if (this.level == 1 && this.subIndex % 2 == 1) {
-                isOnBottom = true;
-            }
-            else {
-                isOnBottom = false;
-            }
-
-            if (this.levelSize == this.levelIndex) {
-                isOnRight = true;
-            }
-            else {
-                isOnRight = false;
-            }
-            //console.log(i, isOnLeft, isOnRight, isOnBottom, this.level);
-
-            let leftNeighbor = 0;
-            let rightNeighbor = null;
-            let bottomNeighbor = null;
-
-            // we will solve the ones on the left border, then right border, then bottom border
-            // the for the one inside
-
-            if (isOnRight) {
-
-                // bottom
-                let target = zoneMap[this.zone][2];
+                let target = zoneMap[this.zone][0];
                 if (this.isInRegularZone(this.zone)) {
-                    bottomNeighbor = (target - 1) * this.facePerZone + (this.baseSize - 2 * this.level + 2);
-                }
-                else {
-                    bottomNeighbor = (target - 1) * this.facePerZone;
-                    // get the inverse level i.e. level 1 will be top level
-                    let targetLevel = this.zoneHeight - this.level + 1;
-                    //console.log("tl", i, targetLevel);
-                    let s = this.baseSize;
-                    for (let j = 0; j < targetLevel; j++) {
-                        bottomNeighbor += s;
-                        s = s - 2;
-                    }
 
-                }
-
-                // left
-                if (!isOnBottom) {
-
-                    leftNeighbor = i - this.levelSize - 1;
+                    leftNeighbor = target * this.facePerZone;
 
                 }
                 else {
-
-                    let target = zoneMap[this.zone][0];
-                    if (this.isInRegularZone(this.zone)) {
-
-                        leftNeighbor = target * this.facePerZone;
-
-                    }
-                    else {
-                        leftNeighbor = (target - 1) * this.facePerZone + this.baseSize;
-                    }
-
+                    leftNeighbor = (target - 1) * this.facePerZone + this.baseSize;
                 }
-
-                //console.log('check1', i, leftNeighbor);
-
-                // right
-
-                if (this.level != this.zoneHeight) {
-                    rightNeighbor = i - 1;
-                }
-                else {
-                    let target = zoneMap[this.zone][1];
-                    if (this.isInRegularZone(this.zone)) {
-                        rightNeighbor = (target - 1) * this.facePerZone + this.baseSize;
-                    }
-                    else {
-                        rightNeighbor = (target - 1) * this.facePerZone + 1;
-                    }
-                }
-
 
             }
 
-            else if (isOnLeft) {
-                // calculate the bottom neighbor
-                if (!isOnBottom) {
+            //console.log('check1', i, leftNeighbor);
 
-                    //console.log('test', i, this.levelSize);
-                    bottomNeighbor = i - (this.levelSize + 2) + 1;
+            // right
 
-                }
-                else {
-                    let target = zoneMap[this.zone][0];
-
-                    if (this.isInRegularZone(this.zone)) {
-
-                        bottomNeighbor = (target - 1) * this.facePerZone + 1;
-                    }
-                    else {
-
-                        bottomNeighbor = target * this.facePerZone;
-                    }
-
-
-
-                }
-
-                // calculation of right neighbor (done)
-                if (this.level < this.zoneHeight) {
-                    rightNeighbor = i + 1;
-                }
-                else {
-                    if (this.isInRegularZone(this.zone)) {
-                        rightNeighbor = (zoneMap[this.zone][2] - 1) * this.facePerZone + 1;
-                    }
-                    else {
-                        rightNeighbor = (zoneMap[this.zone][2] - 1) * this.facePerZone + this.baseSize;
-                    }
-
-
-                    //console.log(this.zone, i, rightNeighbor);
-                }
-
-
-                // calculation of left neighbor (done)
+            if (this.level != this.zoneHeight) {
+                rightNeighbor = i - 1;
+            }
+            else {
                 let target = zoneMap[this.zone][1];
                 if (this.isInRegularZone(this.zone)) {
-                    leftNeighbor = (target - 1) * this.facePerZone + 1 + 2 * (this.level - 1);
-
+                    rightNeighbor = (target - 1) * this.facePerZone + this.baseSize;
                 }
                 else {
-
-                    leftNeighbor = (target - 1) * this.facePerZone + 1;
-                    let targetLevel = this.zoneHeight - this.level;
-                    let facePerRow = this.baseSize;
-                    for (let j = 0; j < targetLevel; j++) {
-                        leftNeighbor += facePerRow;
-                        facePerRow -= 2;
-                    }
-
+                    rightNeighbor = (target - 1) * this.facePerZone + 1;
                 }
+            }
+
+
+        }
+
+        else if (isOnLeft) {
+            // calculate the bottom neighbor
+            if (!isOnBottom) {
+
+                //console.log('test', i, this.levelSize);
+                bottomNeighbor = i - (this.levelSize + 2) + 1;
 
             }
-            else if (isOnBottom) {
-
-
+            else {
                 let target = zoneMap[this.zone][0];
 
                 if (this.isInRegularZone(this.zone)) {
 
                     bottomNeighbor = (target - 1) * this.facePerZone + 1;
-                    let targetLevel = (this.subIndex - 1) / 2;
-                    let s = this.baseSize;
-                    for (let j = 1; j <= targetLevel; j++) {
-                        bottomNeighbor += s;
-                        s = s - 2;
-                    }
-
-
-
                 }
                 else {
-                    let targetLevel = this.zoneHeight - this.level + 1;
-                    bottomNeighbor = (target - 1) * this.facePerZone;
-                    let s = this.baseSize;
-                    for (let j = 1; j < targetLevel; j++) {
-                        bottomNeighbor += s;
-                        s -= 2;
-                    }
+
+                    bottomNeighbor = target * this.facePerZone;
                 }
 
-                // if not on left or right
-                leftNeighbor = i - 1;
+
+
+            }
+
+            // calculation of right neighbor (done)
+            if (this.level < this.zoneHeight) {
                 rightNeighbor = i + 1;
+            }
+            else {
+                if (this.isInRegularZone(this.zone)) {
+                    rightNeighbor = (zoneMap[this.zone][2] - 1) * this.facePerZone + 1;
+                }
+                else {
+                    rightNeighbor = (zoneMap[this.zone][2] - 1) * this.facePerZone + this.baseSize;
+                }
+
+
+                //console.log(this.zone, i, rightNeighbor);
+            }
+
+
+            // calculation of left neighbor (done)
+            let target = zoneMap[this.zone][1];
+            if (this.isInRegularZone(this.zone)) {
+                leftNeighbor = (target - 1) * this.facePerZone + 1 + 2 * (this.level - 1);
 
             }
             else {
 
-                // not in left or right or bottom
-                // left and right are always the direct neighbors
-                leftNeighbor = i - 1;
-                rightNeighbor = i + 1;
-
-                // if  local index even the bottom is on the previous level
-                let localFirstIsEven = (i - this.subIndex + 1) % 2 == 0;
-                //console.log(i,'is even', localFirstIsEven);
-                //let cond1 = this.level % 2 == 0 && !localFirstIsEven;
-                //let cond2 = this.level % 2 == 1 && localFirstIsEven;
-                let onEvenLevel = this.level % 2 == 0;
-                let onEvenIndex = i % 2 == 0;
-
-                let cond1 = localFirstIsEven && onEvenLevel && !onEvenIndex;
-                let cond2 = localFirstIsEven && !onEvenLevel && onEvenIndex;
-                if (cond1 && cond2) {
-                    //console.log(i, 'bot');
-                    bottomNeighbor = i - 2 * (this.zoneHeight - this.level + 1);
-
-                }
-                else {
-                    
-                    bottomNeighbor = i + this.levelSize - 1;
-                    //console.log(i, 'top', this.subIndex, this.levelSize, bottomNeighbor);
+                leftNeighbor = (target - 1) * this.facePerZone + 1;
+                let targetLevel = this.zoneHeight - this.level;
+                let facePerRow = this.baseSize;
+                for (let j = 0; j < targetLevel; j++) {
+                    leftNeighbor += facePerRow;
+                    facePerRow -= 2;
                 }
 
             }
 
-            //console.log('check2',i, leftNeighbor);
-            //console.log(i, leftNeighbor, rightNeighbor, bottomNeighbor);
-            //console.log(i, leftNeighbor, rightNeighbor, bottomNeighbor);
-            this.neighbors[i] = [leftNeighbor, rightNeighbor, bottomNeighbor];
         }
+        else if (isOnBottom) {
+
+
+            let target = zoneMap[this.zone][0];
+
+            if (this.isInRegularZone(this.zone)) {
+
+                bottomNeighbor = (target - 1) * this.facePerZone + 1;
+                let targetLevel = (this.subIndex - 1) / 2;
+                let s = this.baseSize;
+                for (let j = 1; j <= targetLevel; j++) {
+                    bottomNeighbor += s;
+                    s = s - 2;
+                }
+
+
+
+            }
+            else {
+                let targetLevel = this.zoneHeight - this.level + 1;
+                bottomNeighbor = (target - 1) * this.facePerZone;
+                let s = this.baseSize;
+                for (let j = 1; j < targetLevel; j++) {
+                    bottomNeighbor += s;
+                    s -= 2;
+                }
+            }
+
+            // if not on left or right
+            leftNeighbor = i - 1;
+            rightNeighbor = i + 1;
+
+        }
+        else {
+
+            // not in left or right or bottom
+            // left and right are always the direct neighbors
+            leftNeighbor = i - 1;
+            rightNeighbor = i + 1;
+
+
+            // if the first element of the zone is odd then:
+            // - odd element on odd row has bottom element on bottom
+            // - even element on odd row has bottom element on top
+            // - odd element on even row has bttom element on top
+            // - even element on even row has bottom element on bottom
+            // if the first element of the zone is even then:
+            // - odd element on odd row has bottom element on top
+            // - even element on odd row has bottom element on bottom
+            // - odd element on even row has bttom element on bottom
+            // - even element on even row has bottom element on top
+            
+            
+
+            // if  local index even the bottom is on the previous level
+            let localFirstIsEven = (i - this.subIndex + 1) % 2 == 0;
+            //console.log(i,'is even', localFirstIsEven);
+            //let cond1 = this.level % 2 == 0 && !localFirstIsEven;
+            //let cond2 = this.level % 2 == 1 && localFirstIsEven;
+            let onEvenLevel = this.level % 2 == 0;
+            let onEvenIndex = i % 2 == 0;
+
+            let cond1 = localFirstIsEven && onEvenLevel && !onEvenIndex;
+            let cond2 = localFirstIsEven && !onEvenLevel && onEvenIndex;
+            if (cond1 && cond2) {
+                //console.log(i, 'bot');
+                bottomNeighbor = i - 2 * (this.zoneHeight - this.level + 1);
+
+            }
+            else {
+
+                bottomNeighbor = i + this.levelSize - 1;
+                this.l(i, 'top', this.subIndex, this.levelSize, bottomNeighbor);
+            }
+
+        }
+
+        return [leftNeighbor, rightNeighbor, bottomNeighbor];
+    }
+
+    l() {
+        console.log(arguments);
     }
 
 
@@ -329,7 +361,7 @@ export class CellularAutomata {
 
     printNeigbors() {
 
-        for(let i = 1; i <= this.faceCount; i++) {
+        for (let i = 1; i <= this.faceCount; i++) {
 
             let nei = this.getNeigbors(i);
             console.log(i, nei);
@@ -525,14 +557,14 @@ export class CellularAutomata {
             [180, 178, 46, 86]
         ];
 
-        for(let i = 1; i <= this.faceCount; i++) {
+        for (let i = 1; i <= this.faceCount; i++) {
             let nei = [i].concat(this.getNeigbors(i));
 
-            if(JSON.stringify(nei) == JSON.stringify(expected[i -1])) {
+            if (JSON.stringify(nei) == JSON.stringify(expected[i - 1])) {
                 console.log(i, 'ok');
             }
             else {
-                console.log(i, 'error', expected[i-1], 'got', nei);
+                console.log(i, 'error', expected[i - 1], 'got', nei);
                 return;
             }
         }

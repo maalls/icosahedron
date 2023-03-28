@@ -13,7 +13,7 @@ renderer.setSize(innerWidth, innerHeight);
 document.body.appendChild(renderer.domElement);
 
 let controls = new OrbitControls(camera, renderer.domElement);
-let n = 5;
+let n = 20;
 let g = new THREE.IcosahedronGeometry(5, n);
 let colors = [];
 let c = new THREE.Vector3();
@@ -68,3 +68,41 @@ function makeNumbers() {
 }
 
 ca.printNeigbors();
+
+
+const caster = new THREE.Raycaster();
+const mouse = new THREE.Vector2();
+
+function onClick(event) {
+
+    event.preventDefault();
+
+    mouse.x = (event.clientX / renderer.domElement.offsetWidth) * 2 - 1;
+    mouse.y = -(event.clientY / renderer.domElement.offsetHeight) * 2 + 1;
+
+    caster.setFromCamera(mouse, camera);
+
+    const intersects = caster.intersectObjects(scene.children);
+
+    if (intersects.length > 0) {
+
+        const intersection = intersects[0];
+
+        const colorAttribute = intersection.object.geometry.getAttribute('color');
+        const face = intersection.face;
+        const i = face.a / 3;
+        console.log(i, ca.getNeigbors(i), ca.getNeigborCount(colors, i));
+        console.log(ca.computeNeigbors(i));
+        const color = new THREE.Color(Math.random() * 0xff0000);
+
+        colorAttribute.setXYZ(face.a, color.r, color.g, color.b);
+        colorAttribute.setXYZ(face.b, color.r, color.g, color.b);
+        colorAttribute.setXYZ(face.c, color.r, color.g, color.b);
+
+        colorAttribute.needsUpdate = true;
+
+    }
+
+}
+
+window.addEventListener("click", onClick, false);

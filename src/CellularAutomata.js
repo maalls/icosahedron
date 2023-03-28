@@ -116,7 +116,7 @@ export class CellularAutomata {
         else {
             isOnRight = false;
         }
-        this.l(i, isOnLeft, isOnRight, isOnBottom, this.level);
+        //this.l(i, isOnLeft, isOnRight, isOnBottom, this.level);
 
         let leftNeighbor = 0;
         let rightNeighbor = null;
@@ -296,20 +296,30 @@ export class CellularAutomata {
             // - even element on odd row has bottom element on bottom
             // - odd element on even row has bttom element on bottom
             // - even element on even row has bottom element on top
-            
-            
-
-            // if  local index even the bottom is on the previous level
-            let localFirstIsEven = (i - this.subIndex + 1) % 2 == 0;
-            //console.log(i,'is even', localFirstIsEven);
-            //let cond1 = this.level % 2 == 0 && !localFirstIsEven;
-            //let cond2 = this.level % 2 == 1 && localFirstIsEven;
+            let isOnTop;
+            let localFirst = i - (i % this.facePerZone) + 1;
+            let localFirstIsEven = localFirst % 2 == 0;
             let onEvenLevel = this.level % 2 == 0;
             let onEvenIndex = i % 2 == 0;
+            // we first assume it's on odd zone
 
-            let cond1 = localFirstIsEven && onEvenLevel && !onEvenIndex;
-            let cond2 = localFirstIsEven && !onEvenLevel && onEvenIndex;
-            if (cond1 && cond2) {
+            // then we assume it's on odd level
+            if(!onEvenIndex) {
+                isOnTop = false;
+            }
+            else {
+                isOnTop = true;
+            }
+            // if on even level we take the opposite
+            if(onEvenLevel) {
+                isOnTop = !isOnTop;
+            }
+            // and if on even zone, we take the opposite again
+            if(localFirstIsEven) {
+                isOnTop = !isOnTop;
+            }
+
+            if (!isOnTop) {
                 //console.log(i, 'bot');
                 bottomNeighbor = i - 2 * (this.zoneHeight - this.level + 1);
 
@@ -317,17 +327,27 @@ export class CellularAutomata {
             else {
 
                 bottomNeighbor = i + this.levelSize - 1;
-                this.l(i, 'top', this.subIndex, this.levelSize, bottomNeighbor);
+                
             }
+
+            /*console.log(i, {
+                localFirst: localFirst,
+                localFirstIsEven: localFirstIsEven, 
+                onEvenLevel: onEvenLevel, 
+                onEvenIndex: onEvenIndex,
+                isOnTop: isOnTop,
+                neighbors: [leftNeighbor, rightNeighbor, bottomNeighbor],
+                subIndex: this.subIndex
+            });*/
 
         }
 
-        return [leftNeighbor, rightNeighbor, bottomNeighbor];
+        const ret = [leftNeighbor, rightNeighbor, bottomNeighbor];
+
+        return ret;
     }
 
-    l() {
-        console.log(arguments);
-    }
+    
 
 
 

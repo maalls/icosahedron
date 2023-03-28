@@ -1,7 +1,8 @@
 import * as THREE from "three";
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { CellularAutomata } from "./CellularAutomata";
-
+import { Impl1 } from "./implementation/Impl1";
+import { Impl2 } from "./implementation/Impl2";
 
 let scene = new THREE.Scene();
 let camera = new THREE.PerspectiveCamera(60, innerWidth / innerHeight, 1, 100);
@@ -12,9 +13,9 @@ renderer.setSize(innerWidth, innerHeight);
 document.body.appendChild(renderer.domElement);
 
 let controls = new OrbitControls(camera, renderer.domElement);
+controls.minDistance=4; 
+const n = 80;
 
-const n = 20;
-const fps = 1;
 let g = new THREE.IcosahedronGeometry(5, n);
 let colors = [];
 let c = new THREE.Vector3();
@@ -34,17 +35,9 @@ for (let i = 0; i < count / 3; i++) {
 let col = new THREE.Color();
 //col.setRGB(10, 0, 0);
 
-let pop = Math.floor(ca.faceCount / 4);
-let done = [];
-let j;
-for (let i = 1; i <= pop; i++) {
-    do {
-        j = 1 + Math.floor(Math.random() * ca.faceCount);
-    }
-    while (done.includes(j));
-    done.push(j);
-    ca.setColor(colors, j, 1);
-}
+let impl = new Impl1();
+
+impl.init(ca, colors);
 
 g.setAttribute("color", new THREE.Float32BufferAttribute(colors, 3));
 let m;
@@ -78,46 +71,16 @@ renderer.setAnimationLoop(_ => {
     renderer.render(scene, camera);
 })
 
-
 function update() {
 
-    //console.log('coll', ca.getColor(colors, 1));
-    //console.log(colors);
     let newColors = [];
     for (let i = 1; i <= ca.faceCount; i++) {
 
-        let color = ca.getColor(colors, i);
-        let neighbor = ca.getNeigborCount(colors, i);
-        //console.log(i, neighbor);
-        if (neighbor == 0 || neighbor == 3) {
-
-            ca.setColor(newColors, i, 0);
-
-        }
-        else if (neighbor == 2) {
-
-            ca.setColor(newColors, i, 1);
-
-        }
-
-        else {
-            ca.setColor(newColors, i, color);
-        }
-        //console.log('col',ca.faceCount, i, color);
-        // get the color value, divide by 4
-        //let newColor = color / 10 * 8;
-
-        //ca.getNeigbors(i).forEach(el => {
-        //    newColor += ca.getColor(colors, el) / 10;
-        //});
-        //ca.setColor(newColors, i, newColor);
-
+        
+        impl.update(ca, colors, newColors, i);
 
     }
-    //console.log("colors", colors);
-    //console.log('new colors', newColors);
-
-    //ca.setColors(colors, ind++, c);
+    
     g.setAttribute("color", new THREE.Float32BufferAttribute(newColors, 3));
     m.needsUpdate = true;
     colors = newColors;
@@ -156,7 +119,7 @@ const animate = (t) => {
 
 }
 
-startAnimating(fps);
+startAnimating(impl.fps);
 
 //update();
 //update();
@@ -213,14 +176,16 @@ function onClick(event) {
 
         const colorAttribute = intersection.object.geometry.getAttribute('color');
         const face = intersection.face;
-        const i = face.a / 3;
-        console.log(i, ca.getNeigbors(i), ca.getNeigborCount(colors, i));
-        console.log(ca.computeNeigbors(i));
+        const i = (face.a) / 3 + 1;
+        console.log(i, 'col', ca.getColor(colors, i), ca.getNeigbors(i), ca.getNeigborCount(colors, i));
+        //console.log(ca.computeNeigbors(i));
+
+        
         const color = new THREE.Color(Math.random() * 0xff0000);
 
-        colorAttribute.setXYZ(face.a, color.r, color.g, color.b);
-        colorAttribute.setXYZ(face.b, color.r, color.g, color.b);
-        colorAttribute.setXYZ(face.c, color.r, color.g, color.b);
+        colorAttribute.setXYZ(face.a, ca.getColor(colors, i), 0, 0);
+        colorAttribute.setXYZ(face.b, ca.getColor(colors, i), 0, 0);
+        colorAttribute.setXYZ(face.c, ca.getColor(colors, i), 0, 0);
 
         colorAttribute.needsUpdate = true;
 
@@ -229,3 +194,5 @@ function onClick(event) {
 }
 
 window.addEventListener("click", onClick, false);
+
+

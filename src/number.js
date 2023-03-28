@@ -13,7 +13,7 @@ renderer.setSize(innerWidth, innerHeight);
 document.body.appendChild(renderer.domElement);
 
 let controls = new OrbitControls(camera, renderer.domElement);
-let n = 20;
+let n = 3;
 let g = new THREE.IcosahedronGeometry(5, n);
 let colors = [];
 let c = new THREE.Vector3();
@@ -90,7 +90,7 @@ function onClick(event) {
 
         const colorAttribute = intersection.object.geometry.getAttribute('color');
         const face = intersection.face;
-        const i = face.a / 3;
+        const i = face.a / 3 + 1;
         console.log(i, ca.getNeigbors(i), ca.getNeigborCount(colors, i));
         console.log(ca.computeNeigbors(i));
         const color = new THREE.Color(Math.random() * 0xff0000);

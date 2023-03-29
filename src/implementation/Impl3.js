@@ -4,9 +4,9 @@ export class Impl3 {
         this.n = 100;
     }
     onClick(ca, colors, i) {
-        console.log("click");
+        console.log("click", i);
         ca.setColor(colors, i, !ca.getColor(colors, i));
-
+        return;
         ca.setColorRGB(colors, i, 1, 1, 0);
         let neighbors = ca.getNeigbors(i);
         neighbors.forEach(element => {

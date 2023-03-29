@@ -159,10 +159,12 @@ const caster = new THREE.Raycaster();
 const mouse = new THREE.Vector2();
 let mousedownStart;
 function onClick(event) {
+
+    event.preventDefault();
     const d = new Date();
     //console.log(mousedownStart, d.getTime(), d.getTime() - mousedownStart);
     if (d.getTime() - mousedownStart > 300) return;
-    event.preventDefault();
+    
 
     mouse.x = (event.clientX / renderer.domElement.offsetWidth) * 2 - 1;
     mouse.y = -(event.clientY / renderer.domElement.offsetHeight) * 2 + 1;
@@ -212,8 +214,6 @@ window.addEventListener("mousedown", () => {
     mousedownStart = d.getTime();
 }, false);
 window.addEventListener("click", onClick, false);
-
-
 
 document.getElementById('player').onclick = (event) => {
     event.preventDefault();

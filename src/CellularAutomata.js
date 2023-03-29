@@ -398,6 +398,7 @@ export class CellularAutomata {
     setColor(colors, i, color) {
 
 
+        return this.setColorRGB(colors, i, color, 0, 0);
 
         //let linear = color.convertSRGBToLinear ();
         //console.log("setting", color.toArray());
@@ -412,6 +413,19 @@ export class CellularAutomata {
         colors[ind + 7] = 0;
         colors[ind + 8] = 0;
 
+    }
+
+    setColorRGB(colors, i, red, green, blue) {
+        let ind = (i - 1) * 9;
+        colors[ind + 0] = red;
+        colors[ind + 1] = green;
+        colors[ind + 2] = blue;
+        colors[ind + 3] = red;
+        colors[ind + 4] = green;
+        colors[ind + 5] = blue;
+        colors[ind + 6] = red;
+        colors[ind + 7] = green;
+        colors[ind + 8] = blue;
     }
 
     printNeigbors() {

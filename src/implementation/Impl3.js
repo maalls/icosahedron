@@ -1,11 +1,17 @@
 export class Impl3 {
     constructor() {
         this.fps = 10;
-        this.n = 3;
+        this.n = 100;
     }
     onClick(ca, colors, i) {
         console.log("click");
         ca.setColor(colors, i, !ca.getColor(colors, i));
+
+        ca.setColorRGB(colors, i, 1, 1, 0);
+        let neighbors = ca.getNeigbors(i);
+        neighbors.forEach(element => {
+            ca.setColorRGB(colors, element, 0, 0, 1);
+        });
 
     }
 

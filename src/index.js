@@ -12,7 +12,7 @@ let renderer = new THREE.WebGLRenderer();
 renderer.setClearColor(0x404040);
 renderer.setSize(innerWidth, innerHeight);
 document.body.appendChild(renderer.domElement);
-let impl = new Impl4();
+let impl = new Impl3();
 let controls = new OrbitControls(camera, renderer.domElement);
 controls.minDistance = 6;
 const n = impl.n;
@@ -70,11 +70,14 @@ function update() {
         impl.before();
     }
 
-    for (let i = 1; i <= ca.faceCount; i++) {
+    if(impl.loop != undefined) {
+        impl.loop(ca, colors, newColors);
+    }
+    else {
+        for (let i = 1; i <= ca.faceCount; i++) {
+            impl.update(ca, colors, newColors, i);
 
-
-        impl.update(ca, colors, newColors, i);
-
+        }
     }
 
     g.setAttribute("color", new THREE.Float32BufferAttribute(newColors, 3));

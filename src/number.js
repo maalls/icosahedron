@@ -92,7 +92,7 @@ function onClick(event) {
         const face = intersection.face;
         const i = face.a / 3 + 1;
         console.log(i, ca.getNeigbors(i), ca.getNeigborCount(colors, i));
-        console.log(ca.computeNeigbors(i));
+        ca.computeNeigbors(i);
         const color = new THREE.Color(Math.random() * 0xff0000);
 
         colorAttribute.setXYZ(face.a, color.r, color.g, color.b);

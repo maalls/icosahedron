@@ -16,7 +16,7 @@ const zoneMap = {
     15: [14, 11, 20],
     16: [11, 7, 6],
     17: [12, 8, 7],
-    18: [13, 6, 8],
+    18: [13, 9, 8],
     19: [14, 10, 9],
     20: [15, 6, 10]
 }
@@ -116,7 +116,7 @@ export class CellularAutomata {
         else {
             isOnRight = false;
         }
-        //this.l(i, isOnLeft, isOnRight, isOnBottom, this.level);
+       //console.log('position', i,'l', isOnLeft,'r', isOnRight, 'b', isOnBottom, this.level);
 
         let leftNeighbor = 0;
         let rightNeighbor = null;
@@ -124,19 +124,24 @@ export class CellularAutomata {
 
         // we will solve the ones on the left border, then right border, then bottom border
         // the for the one inside
-
+        //console.log(i, 'zone', this.zone);
         if (isOnRight) {
 
             // bottom
+            //console.log("right", i, this.zone);
+
             let target = zoneMap[this.zone][2];
             if (this.isInRegularZone(this.zone)) {
                 bottomNeighbor = (target - 1) * this.facePerZone + (this.baseSize - 2 * this.level + 2);
             }
             else {
+
+
+
                 bottomNeighbor = (target - 1) * this.facePerZone;
                 // get the inverse level i.e. level 1 will be top level
                 let targetLevel = this.zoneHeight - this.level + 1;
-                //console.log("tl", i, targetLevel);
+                //console.log("tl", i, target, bottomNeighbor, targetLevel);
                 let s = this.baseSize;
                 for (let j = 0; j < targetLevel; j++) {
                     bottomNeighbor += s;
@@ -144,11 +149,13 @@ export class CellularAutomata {
                 }
 
             }
+            //console.log("bottom", bottomNeighbor);
 
             // left
             if (!isOnBottom) {
-
+                
                 leftNeighbor = i - this.levelSize - 1;
+                //console.log("not bottom, left", leftNeighbor);
 
             }
             else {
@@ -163,6 +170,8 @@ export class CellularAutomata {
                     leftNeighbor = (target - 1) * this.facePerZone + this.baseSize;
                 }
 
+                //console.log("bottom, left", leftNeighbor);
+
             }
 
             //console.log('check1', i, leftNeighbor);
@@ -173,7 +182,9 @@ export class CellularAutomata {
                 rightNeighbor = i - 1;
             }
             else {
+                
                 let target = zoneMap[this.zone][1];
+                //.log('is on top, target', target);
                 if (this.isInRegularZone(this.zone)) {
                     rightNeighbor = (target - 1) * this.facePerZone + this.baseSize;
                 }
@@ -251,7 +262,7 @@ export class CellularAutomata {
             let target = zoneMap[this.zone][0];
 
             if (this.isInRegularZone(this.zone)) {
-
+                //console.log("here");
                 bottomNeighbor = (target - 1) * this.facePerZone + 1;
                 let targetLevel = (this.subIndex - 1) / 2;
                 let s = this.baseSize;
@@ -264,13 +275,37 @@ export class CellularAutomata {
 
             }
             else {
-                let targetLevel = this.zoneHeight - this.level + 1;
-                bottomNeighbor = (target - 1) * this.facePerZone;
-                let s = this.baseSize;
-                for (let j = 1; j < targetLevel; j++) {
-                    bottomNeighbor += s;
-                    s -= 2;
+
+                //console.log('zone', this.zone);
+                let targetLevel;
+                if (!this.isInRegularZone(this.zone)) {
+                    targetLevel = (this.baseSize - this.subIndex) / 2 + 1;
+                    //console.log('tl', targetLevel);
+
+                    bottomNeighbor = (target - 1) * this.facePerZone;
+                    let s = this.baseSize;
+                    for(let j = 1; j <= targetLevel; j++) {
+                        bottomNeighbor += s;
+                        s -= 2;
+                    }
+
                 }
+                else {
+                    targetLevel = this.zoneHeight - this.level + 1;
+                    //.log('f', this.zoneHeight, this.level);
+                    bottomNeighbor = (target - 1) * this.facePerZone;
+                    //console.log('tl', targetLevel, target);
+                    let s = this.baseSize;
+                    //console.log("b", bottomNeighbor, targetLevel, s);
+                    for (let j = 1; j < targetLevel; j++) {
+                        bottomNeighbor += s;
+                        s -= 2;
+                        //console.log("it", bottomNeighbor, s);
+                    }
+
+                }
+
+
             }
 
             // if not on left or right
@@ -304,18 +339,18 @@ export class CellularAutomata {
             // we first assume it's on odd zone
 
             // then we assume it's on odd level
-            if(!onEvenIndex) {
+            if (!onEvenIndex) {
                 isOnTop = false;
             }
             else {
                 isOnTop = true;
             }
             // if on even level we take the opposite
-            if(onEvenLevel) {
+            if (onEvenLevel) {
                 isOnTop = !isOnTop;
             }
             // and if on even zone, we take the opposite again
-            if(localFirstIsEven) {
+            if (localFirstIsEven) {
                 isOnTop = !isOnTop;
             }
 
@@ -327,7 +362,7 @@ export class CellularAutomata {
             else {
 
                 bottomNeighbor = i + this.levelSize - 1;
-                
+
             }
 
             /*console.log(i, {
@@ -347,7 +382,7 @@ export class CellularAutomata {
         return ret;
     }
 
-    
+
 
 
 

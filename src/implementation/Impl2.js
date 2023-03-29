@@ -1,6 +1,7 @@
 export class Impl2 {
     constructor() {
         this.fps = 2;
+        this.n = 100;
     }
     init(ca, colors) {
         let pop = Math.floor(ca.faceCount / 4);

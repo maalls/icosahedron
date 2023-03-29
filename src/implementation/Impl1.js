@@ -1,6 +1,7 @@
 export class Impl1 {
     constructor() {
         this.fps = 20;
+        this.n = 100;
     }
 
 

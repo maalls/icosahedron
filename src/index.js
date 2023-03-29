@@ -3,7 +3,8 @@ import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { CellularAutomata } from "./CellularAutomata";
 import { Impl1 } from "./implementation/Impl1";
 import { Impl2 } from "./implementation/Impl2";
-
+import { Impl3 } from "./implementation/Impl3";
+import { Impl4 } from "./implementation/Impl4";
 let scene = new THREE.Scene();
 let camera = new THREE.PerspectiveCamera(60, innerWidth / innerHeight, 1, 100);
 camera.position.set(0, 10, 10);
@@ -11,10 +12,10 @@ let renderer = new THREE.WebGLRenderer();
 renderer.setClearColor(0x404040);
 renderer.setSize(innerWidth, innerHeight);
 document.body.appendChild(renderer.domElement);
-
+let impl = new Impl4();
 let controls = new OrbitControls(camera, renderer.domElement);
-controls.minDistance=4; 
-const n = 80;
+controls.minDistance = 6;
+const n = impl.n;
 
 let g = new THREE.IcosahedronGeometry(5, n);
 let colors = [];
@@ -27,45 +28,35 @@ let ca = new CellularAutomata(n);
 const max = ca.faceCount;
 
 
-for (let i = 0; i < count / 3; i++) {
 
-    colors.push(0, 0, 0, 0, 0, 0, 0, 0, 0);
-
-}
-let col = new THREE.Color();
 //col.setRGB(10, 0, 0);
 
-let impl = new Impl1();
 
-impl.init(ca, colors);
 
-g.setAttribute("color", new THREE.Float32BufferAttribute(colors, 3));
+
 let m;
-let showNumber = false;
-if (showNumber) {
 
+function init() {
+    colors = [];
     for (let i = 0; i < count / 3; i++) {
 
-        uv.push(
-            (0.067 + i) / max, 0.25,
-            (0.933 + i) / max, 0.25,
-            (0.5 + i) / max, 1
-        );
+        colors.push(0, 0, 0, 0, 0, 0, 0, 0, 0);
 
     }
-    g.setAttribute("uv", new THREE.Float32BufferAttribute(uv, 2));
+    let col = new THREE.Color();
+    impl.init(ca, colors);
 
-    m = new THREE.MeshBasicMaterial({ vertexColors: true, map: makeNumbers() });
+    g.setAttribute("color", new THREE.Float32BufferAttribute(colors, 3));
 }
-else {
-    m = new THREE.MeshBasicMaterial({ vertexColors: true });
-}
+init();
+m = new THREE.MeshBasicMaterial({ vertexColors: true });
+
 
 
 let o = new THREE.Mesh(g, m);
 scene.add(o);
 
-
+let play = false;
 
 renderer.setAnimationLoop(_ => {
     renderer.render(scene, camera);
@@ -74,13 +65,18 @@ renderer.setAnimationLoop(_ => {
 function update() {
 
     let newColors = [];
+
+    if (impl.before != undefined) {
+        impl.before();
+    }
+
     for (let i = 1; i <= ca.faceCount; i++) {
 
-        
+
         impl.update(ca, colors, newColors, i);
 
     }
-    
+
     g.setAttribute("color", new THREE.Float32BufferAttribute(newColors, 3));
     m.needsUpdate = true;
     colors = newColors;
@@ -114,7 +110,7 @@ const animate = (t) => {
         then = now - (elapsed % fpsInterval);
 
         // Put your drawing code here
-        update();
+        if (play) update();
     }
 
 }
@@ -158,9 +154,11 @@ function makeNumbers() {
 
 const caster = new THREE.Raycaster();
 const mouse = new THREE.Vector2();
-
+let mousedownStart;
 function onClick(event) {
-
+    const d = new Date();
+    //console.log(mousedownStart, d.getTime(), d.getTime() - mousedownStart);
+    if (d.getTime() - mousedownStart > 300) return;
     event.preventDefault();
 
     mouse.x = (event.clientX / renderer.domElement.offsetWidth) * 2 - 1;
@@ -172,27 +170,85 @@ function onClick(event) {
 
     if (intersects.length > 0) {
 
+
+
         const intersection = intersects[0];
 
         const colorAttribute = intersection.object.geometry.getAttribute('color');
         const face = intersection.face;
         const i = (face.a) / 3 + 1;
-        console.log(i, 'col', ca.getColor(colors, i), ca.getNeigbors(i), ca.getNeigborCount(colors, i));
-        //console.log(ca.computeNeigbors(i));
 
-        
-        const color = new THREE.Color(Math.random() * 0xff0000);
+        if (impl.onClick != undefined) {
+            impl.onClick(ca, colors, i);
 
-        colorAttribute.setXYZ(face.a, ca.getColor(colors, i), 0, 0);
-        colorAttribute.setXYZ(face.b, ca.getColor(colors, i), 0, 0);
-        colorAttribute.setXYZ(face.c, ca.getColor(colors, i), 0, 0);
+            g.setAttribute("color", new THREE.Float32BufferAttribute(colors, 3));
+            //m.needsUpdate = true;
+        }
+        else {
 
+            console.log(i, 'col', ca.getColor(colors, i), ca.getNeigbors(i), ca.getNeigborCount(colors, i));
+            //console.log(ca.computeNeigbors(i));
+
+
+            const color = new THREE.Color(Math.random() * 0xff0000);
+
+            colorAttribute.setXYZ(face.a, ca.getColor(colors, i), 0, 0);
+            colorAttribute.setXYZ(face.b, ca.getColor(colors, i), 0, 0);
+            colorAttribute.setXYZ(face.c, ca.getColor(colors, i), 0, 0);
+        }
         colorAttribute.needsUpdate = true;
 
     }
 
+
+
 }
 
+window.addEventListener("mousedown", () => {
+    const d = new Date();
+    mousedownStart = d.getTime();
+}, false);
 window.addEventListener("click", onClick, false);
 
 
+
+document.getElementById('player').onclick = (event) => {
+    event.preventDefault();
+    if (play) {
+        play = false;
+        document.getElementById('player').innerText = 'play';
+    }
+    else {
+        play = true;
+        document.getElementById('player').innerText = 'stop';
+    }
+}
+
+document.getElementById('step').onclick = (event) => {
+    event.preventDefault();
+    update();
+}
+
+
+document.getElementById('reset').onclick = (event) => {
+    init();
+    m.needsUpdate = true;
+}
+
+
+if (impl.hasOwnProperty('getUiSetting')) {
+    let uiSettings = impl.getUiSetting();
+    if (uiSettings != undefined) {
+
+        uiSettings.forEach(setting => {
+
+            switch (setting.type) {
+
+                case 'select':
+
+
+            }
+        });
+
+    }
+}

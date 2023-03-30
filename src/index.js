@@ -55,7 +55,7 @@ m = new THREE.MeshBasicMaterial({ vertexColors: true });
 let o = new THREE.Mesh(g, m);
 scene.add(o);
 
-let play = false;
+let play = true;
 
 renderer.setAnimationLoop(_ => {
     renderer.render(scene, camera);

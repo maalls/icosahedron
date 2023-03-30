@@ -2,6 +2,10 @@ export class Impl3 {
     constructor() {
         this.fps = 10;
         this.n = 100;
+
+        this.ui = {
+            name: "Game of life 2"
+        }
     }
     onClick(ca, colors, i) {
         console.log("click", i);
@@ -24,6 +28,7 @@ export class Impl3 {
         ];
     }
     init(ca, colors) {
+        ca.setColor(colors, 1, 1);
         return;
         let pop = 0; //Math.floor(ca.faceCount / 1.2);
         let done = [];

@@ -2,7 +2,13 @@ export class Impl1 {
     constructor() {
         this.fps = 20;
         this.n = 100;
+
+        this.ui = {
+            name: "Heat diffusion"
+        }
     }
+
+    
 
 
     init(ca, colors) {

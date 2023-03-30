@@ -5,6 +5,11 @@ import { Impl1 } from "./implementation/Impl1";
 import { Impl2 } from "./implementation/Impl2";
 import { Impl3 } from "./implementation/Impl3";
 import { Impl4 } from "./implementation/Impl4";
+import { Impl5 } from "./implementation/Impl5";
+const impls = [new Impl5(), new Impl1(), new Impl2(), new Impl3(), new Impl4()];
+
+const params = new URLSearchParams(window.location.search);
+
 let scene = new THREE.Scene();
 let camera = new THREE.PerspectiveCamera(60, innerWidth / innerHeight, 1, 100);
 camera.position.set(0, 10, 10);
@@ -12,7 +17,10 @@ let renderer = new THREE.WebGLRenderer();
 renderer.setClearColor(0x404040);
 renderer.setSize(innerWidth, innerHeight);
 document.body.appendChild(renderer.domElement);
-let impl = new Impl3();
+
+let implIndex = params.has('impl') ? params.get('impl'): 0;
+
+let impl = impls[implIndex];
 let controls = new OrbitControls(camera, renderer.domElement);
 controls.minDistance = 6;
 const n = impl.n;
@@ -23,36 +31,27 @@ let c = new THREE.Vector3();
 
 const count = g.attributes.position.count;
 
-let uv = [];
 let ca = new CellularAutomata(n);
-const max = ca.faceCount;
-
-
-
-//col.setRGB(10, 0, 0);
-
-
 
 
 let m;
 
 function init() {
     colors = [];
+    let k = 0;
     for (let i = 0; i < count / 3; i++) {
 
         colors.push(0, 0, 0, 0, 0, 0, 0, 0, 0);
 
+
     }
     let col = new THREE.Color();
     impl.init(ca, colors);
-
     g.setAttribute("color", new THREE.Float32BufferAttribute(colors, 3));
 }
 init();
+
 m = new THREE.MeshBasicMaterial({ vertexColors: true });
-
-
-
 let o = new THREE.Mesh(g, m);
 scene.add(o);
 
@@ -70,7 +69,7 @@ function update() {
         impl.before();
     }
 
-    if(impl.loop != undefined) {
+    if (impl.loop != undefined) {
         impl.loop(ca, colors, newColors);
     }
     else {
@@ -105,7 +104,7 @@ const animate = (t) => {
     elapsed = now - then;
 
     // if enough time has elapsed, draw the next frame
-
+    fpsInterval = 1000 / impl.fps;
     if (elapsed > fpsInterval) {
 
         // Get ready for next frame by setting then=now, but also adjust for your
@@ -120,41 +119,6 @@ const animate = (t) => {
 
 startAnimating(impl.fps);
 
-//update();
-//update();
-//update();
-/*update();
-update();
-update();
-update();
-update();
-update();
-update();
-update();
-*/
-
-
-function makeNumbers() {
-    let c = numbers;
-    let ctx = c.getContext("2d");
-    ctx.fillStyle = "#fff";
-    ctx.fillRect(0, 0, c.width, c.height);
-
-    ctx.textAlign = "center";
-    ctx.textBaseline = "middle";
-    ctx.fillStyle = "#000";
-    ctx.font = 'bold 10px Arial';
-
-    let step = 20480 / max;
-    let start = step * 0.5;
-
-    for (let i = 0; i < max; i++) {
-        ctx.fillText(i + 1, start + step * i, 32);
-    }
-
-    return new THREE.CanvasTexture(c);
-}
-
 const caster = new THREE.Raycaster();
 const mouse = new THREE.Vector2();
 let mousedownStart;
@@ -164,7 +128,7 @@ function onClick(event) {
     const d = new Date();
     //console.log(mousedownStart, d.getTime(), d.getTime() - mousedownStart);
     if (d.getTime() - mousedownStart > 300) return;
-    
+
 
     mouse.x = (event.clientX / renderer.domElement.offsetWidth) * 2 - 1;
     mouse.y = -(event.clientY / renderer.domElement.offsetHeight) * 2 + 1;
@@ -238,6 +202,29 @@ document.getElementById('reset').onclick = (event) => {
     m.needsUpdate = true;
 }
 
+const implSelect = document.createElement('select');
+
+
+impls.forEach((impl, key) => {
+    console.log(impl);
+    const option = document.createElement('option');
+    option.value = key;
+    option.innerHTML = impl.ui.name;
+    if(key == implIndex) {
+        option.selected = "selected";
+    }
+    implSelect.appendChild(option);
+});
+implSelect.onchange = function(event) {
+    console.log(this.selectedIndex);
+    impl = impls[this.selectedIndex];
+    params.set('impl', this.selectedIndex);
+    var newRelativePathQuery = window.location.pathname + '?' + params.toString();
+    history.pushState(null, '', newRelativePathQuery);
+
+    init();
+}
+document.getElementById('impl-settings').appendChild(implSelect);
 
 if (impl.hasOwnProperty('getUiSetting')) {
     let uiSettings = impl.getUiSetting();

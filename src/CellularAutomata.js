@@ -415,6 +415,13 @@ export class CellularAutomata {
 
     }
 
+    getColorRGB(colors, i) {
+
+        let ind = (i - 1) * 9;
+        return [colors[ind], colors[ind+1], colors[ind+2]];
+
+    }
+
     setColorRGB(colors, i, red, green, blue) {
         let ind = (i - 1) * 9;
         colors[ind + 0] = red;

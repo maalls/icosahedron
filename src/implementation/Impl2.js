@@ -2,9 +2,17 @@ export class Impl2 {
     constructor() {
         this.fps = 2;
         this.n = 100;
+
+        this.ui = {
+            name: "Game of life"
+        }
+    }
+    onClick(ca, colors, i) {
+        ca.setColor(colors, i, ca.getColor(colors, i) ? 0 : 1);
     }
     init(ca, colors) {
-        let pop = Math.floor(ca.faceCount / 4);
+        return;
+        let pop = Math.floor(ca.faceCount / 20);
         let done = [];
         let j;
         for (let i = 1; i <= pop; i++) {
@@ -13,7 +21,7 @@ export class Impl2 {
             }
             while (done.includes(j));
             done.push(j);
-            ca.setColor(colors, j, 1);
+            ca.setColor(colors, j, 0);
         }
     }
     update(ca, colors, newColors, i) {

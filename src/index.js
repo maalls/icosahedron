@@ -55,12 +55,16 @@ m = new THREE.MeshBasicMaterial({ vertexColors: true });
 let o = new THREE.Mesh(g, m);
 scene.add(o);
 
-let play = true;
-
+let play = params.has('autoplay') && parseInt(params.get('autoplay')) ? true : false;
+console.log('autoplay', params.get('autoplay'));
 renderer.setAnimationLoop(_ => {
     renderer.render(scene, camera);
 })
 
+let undo = [];
+let undoPosition = 0;
+let undoSize = 30;
+let undoMax = 0;
 function update() {
 
     let newColors = [];
@@ -81,8 +85,24 @@ function update() {
 
     g.setAttribute("color", new THREE.Float32BufferAttribute(newColors, 3));
     m.needsUpdate = true;
+    undo[undoPosition] = colors;
+    undoPosition = (undoPosition + 1) % undoSize;
+    undoMax++;
+    //console.log(historyPosition, history);
     colors = newColors;
 
+}
+
+function doUndo() {
+    
+    if(undoMax == 0) return;
+
+    undoPosition = (undoMax + undoPosition - 1) % undoMax;
+    colors = undo[undoPosition];
+    //console.log("colors", colors);
+    undoMax--;
+    g.setAttribute("color", new THREE.Float32BufferAttribute(colors, 3));
+    m.needsUpdate = true;
 }
 
 var fpsInterval, startTime, now, then, elapsed;
@@ -139,10 +159,7 @@ function onClick(event) {
 
     if (intersects.length > 0) {
 
-
-
         const intersection = intersects[0];
-
         const colorAttribute = intersection.object.geometry.getAttribute('color');
         const face = intersection.face;
         const i = (face.a) / 3 + 1;
@@ -157,10 +174,7 @@ function onClick(event) {
 
             console.log(i, 'col', ca.getColor(colors, i), ca.getNeigbors(i), ca.getNeigborCount(colors, i));
             //console.log(ca.computeNeigbors(i));
-
-
             const color = new THREE.Color(Math.random() * 0xff0000);
-
             colorAttribute.setXYZ(face.a, ca.getColor(colors, i), 0, 0);
             colorAttribute.setXYZ(face.b, ca.getColor(colors, i), 0, 0);
             colorAttribute.setXYZ(face.c, ca.getColor(colors, i), 0, 0);
@@ -179,6 +193,7 @@ window.addEventListener("mousedown", () => {
 }, false);
 window.addEventListener("click", onClick, false);
 
+document.getElementById('player').innerText = play? 'stop' : 'play';
 document.getElementById('player').onclick = (event) => {
     event.preventDefault();
     if (play) {
@@ -196,6 +211,14 @@ document.getElementById('step').onclick = (event) => {
     update();
 }
 
+document.getElementById('undo').onclick = (event) => {
+    event.preventDefault();
+    doUndo();
+}
+document.getElementById('controller').onclick = (event) => {
+    event.preventDefault();
+    event.stopPropagation();
+}
 
 document.getElementById('reset').onclick = (event) => {
     init();

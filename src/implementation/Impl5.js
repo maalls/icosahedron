@@ -1,29 +1,40 @@
 export class Impl5 {
     constructor() {
-        this.fps = 5;
+        this.fps = 12;
         this.n = 100;
 
         this.ui = {
-            name: "Rock Scisor paper"
+            name: "Rock Paper Scisor"
         }
+
+        this.walls = [];
     }
 
     
     onClick(ca, colors, i) {
-        let color = ca.getColorRGB(colors, i);
 
-        let ind = color.indexOf(1);
-        if(ind == -1) {
-            ca.setColorRGB(colors, i, 1,0,0);
-        }
-        else if(ind == 0) {
-            ca.setColorRGB(colors, i, 0, 1, 0);
-        }
-        else if(ind == 1) {
-            ca.setColorRGB(colors, i, 0, 0, 1);
-        }
-        else if(ind == 2) {
+        let ind = this.walls.indexOf(i);
+        if(ind >= 0) {
             ca.setColorRGB(colors, i, 0, 0, 0);
+            this.walls.splice(ind, 1);
+        }
+        else {
+            let color = ca.getColorRGB(colors, i);
+            let ind = color.indexOf(1);
+            if(ind == -1) {
+                ca.setColorRGB(colors, i, 1,0,0);
+            }
+            else if(ind == 0) {
+                ca.setColorRGB(colors, i, 0, 1, 0);
+            }
+            else if(ind == 1) {
+                ca.setColorRGB(colors, i, 0, 0, 1);
+            }
+            else if(ind == 2) {
+                //ca.setColorRGB(colors, i, 0, 0, 0);
+                this.walls.push(i);
+                ca.setColorRGB(colors, i, 1,0,1);
+            }
         }
 
     }
@@ -34,12 +45,12 @@ export class Impl5 {
 
             let val = Math.random() * 3;
             let r,g,b;
-            if(val < 2) {
+            if(val < 2.7) {
                 
                     r = 1;
                     g = b = 0;
             }
-            else if(val < 2.05) {
+            else if(val < 2.90) {
                 g = 1;
                 r = b = 0;
             }
@@ -58,7 +69,11 @@ export class Impl5 {
         let color = ca.getColorRGB(colors, i);
         let newColor;
 
-        if(color[0] == color[1] == color[2] == 0) {
+        if(this.walls.includes(i)) {
+            ca.setColorRGB(newColors, i, 1,0,1);
+            return;
+        }
+        else if(color[0] == color[1] == color[2] == 0) {
             
             let stop = false;
             let count = [0,0,0];
@@ -114,6 +129,7 @@ export class Impl5 {
             else {
                 ca.setColorRGB(newColors, i, color[0], color[1], color[2]);
             }
+            
 
         });
         

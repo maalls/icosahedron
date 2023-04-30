@@ -41,7 +41,7 @@ export class Controller {
             params.set('impl', this.selectedIndex);
             var newRelativePathQuery = window.location.pathname + '?' + params.toString();
             history.pushState(null, '', newRelativePathQuery);
-
+            engine.setImplementation(impl);
             engine.reset();
         }
         document.getElementById('impl-settings').appendChild(implSelect);
@@ -65,7 +65,7 @@ export class Controller {
 
         
 
-        document.getElementById('player').innerText = this.play ? 'stop' : 'play';
+        document.getElementById('player').innerText = this.play ? 'pause' : 'play';
         document.getElementById('player').onclick = (event) => {
             event.preventDefault();
             if (engine.isPlaying) {
@@ -74,7 +74,7 @@ export class Controller {
             }
             else {
                 engine.play();
-                document.getElementById('player').innerText = 'stop';
+                document.getElementById('player').innerText = 'pause';
             }
         }
 
@@ -94,6 +94,11 @@ export class Controller {
 
         document.getElementById('reset').onclick = (event) => {
             engine.reset();
+            
+        }
+        document.getElementById('clear').onclick = (event) => {
+            engine.clear();
+            engine.applyColors();
             
         }
 

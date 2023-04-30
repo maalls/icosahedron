@@ -1,7 +1,7 @@
 export class Impl5 {
     constructor() {
         this.fps = 12;
-        this.n = 200;
+        this.n = 100;
 
         this.ui = {
             name: "Rock Paper Scisor"
@@ -45,7 +45,7 @@ export class Impl5 {
 
             let val = Math.random() * 3;
             let r,g,b;
-            if(val < 2.7) {
+            if(val < 2.8) {
                 
                     r = 1;
                     g = b = 0;

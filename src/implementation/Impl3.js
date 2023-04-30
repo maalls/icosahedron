@@ -1,6 +1,6 @@
 export class Impl3 {
     constructor() {
-        this.fps = 10;
+        this.fps = 12;
         this.n = 100;
 
         this.ui = {

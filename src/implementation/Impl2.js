@@ -11,7 +11,14 @@ export class Impl2 {
         ca.setColor( i, ca.getColor(i) ? 0 : 1);
     }
     init(ca) {
-        return;
+        for(let i = 1; i <= ca.faceCount; i++) {
+            let ran = Math.random();
+            if(ran > 0.05) {
+                ca.setColor(i, 1);
+            }
+            
+        }
+        ca.setColor(1, 1);
         
     }
     update(ca, i) {

@@ -32,12 +32,6 @@ export class Engine {
         const n = impl.n;
 
         this.g = new THREE.IcosahedronGeometry(5, n);
-
-        
-
-
-
-
         this.camera = new THREE.PerspectiveCamera(60, innerWidth / innerHeight, 1, 100);
         this.camera.position.set(0, 10, 10);
 
@@ -104,24 +98,33 @@ export class Engine {
         }, false);
         window.addEventListener("click", e => this.onClick(e), false);
 
+
+        window.addEventListener("resize", event => {
+
+            this.renderer.setSize(innerWidth, innerHeight);
+            this.camera.aspect = innerWidth / innerHeight;
+            this.camera.updateProjectionMatrix();
+
+
+        }, false);
     }
 
     reset() {
 
         this.ca = new CellularAutomata(this.implementation.n);
 
-        for (let i = 1; i <= this.ca.faceCount; i++) {
-
-            this.ca.setColorRGB(i, 1, 0, 0);
-
-
-        }
+        this.clear();
         //console.log('colors', this.ca.colors);
         this.implementation.init(this.ca);
         this.applyColors();
-        console.log("reset", this.ca);
 
+    }
 
+    clear() {
+        for (let i = 1; i <= this.ca.faceCount; i++) {
+            this.ca.setColorRGB(i, 0, 0, 0);
+        }
+        
     }
 
     update() {
@@ -157,9 +160,8 @@ export class Engine {
     }
 
     undo() {
-        console.log("max", this.undoMax);
-        if (this.undoMax == 0) return;
 
+        if (this.undoMax == 0) return;
         this.undoPosition = (this.undoMax + this.undoPosition - 1) % this.undoMax;
         this.ca.setColors(this.undos[this.undoPosition]);
         this.applyColors();
@@ -194,7 +196,6 @@ export class Engine {
             if (this.implementation.onClick != undefined) {
                 this.ca.setColors(this.ca.colors);
                 this.implementation.onClick(this.ca, i);
-
                 this.applyColors();
             }
             else {

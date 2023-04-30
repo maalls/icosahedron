@@ -94,7 +94,7 @@ export class Controller {
 
         document.getElementById('reset').onclick = (event) => {
             engine.reset();
-            m.needsUpdate = true;
+            
         }
 
 

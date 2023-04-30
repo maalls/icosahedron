@@ -23,41 +23,43 @@ export class Engine {
     }
     init() {
 
-        let renderer = new THREE.WebGLRenderer();
-        renderer.setClearColor(0x404040);
-        renderer.setSize(innerWidth, innerHeight);
-        document.body.appendChild(renderer.domElement);
+        this.renderer = new THREE.WebGLRenderer();
+        this.renderer.setClearColor(0x404040);
+        this.renderer.setSize(innerWidth, innerHeight);
+        document.body.appendChild(this.renderer.domElement);
         let impl = this.implementation;
 
         const n = impl.n;
 
         this.g = new THREE.IcosahedronGeometry(5, n);
-        
-        this.reset();
-
-
 
         
-        let camera = new THREE.PerspectiveCamera(60, innerWidth / innerHeight, 1, 100);
-        camera.position.set(0, 10, 10);
 
-        let controls = new OrbitControls(camera, renderer.domElement);
+
+
+
+        this.camera = new THREE.PerspectiveCamera(60, innerWidth / innerHeight, 1, 100);
+        this.camera.position.set(0, 10, 10);
+
+        let controls = new OrbitControls(this.camera, this.renderer.domElement);
         controls.minDistance = 6;
 
-        let scene = new THREE.Scene();
+        this.scene = new THREE.Scene();
         this.m = new THREE.MeshBasicMaterial({ vertexColors: true });
         let o = new THREE.Mesh(this.g, this.m);
-        scene.add(o);
-        renderer.setAnimationLoop(_ => {
-            renderer.render(scene, camera);
+        this.scene.add(o);
+        this.reset();
+        this.renderer.setAnimationLoop(_ => {
+            this.renderer.render(this.scene, this.camera);
         })
+        
 
         this.undos = [];
         this.undoPosition = 0;
         this.undoSize = 30;
         this.undoMax = 0;
 
-        
+
 
         var fpsInterval, startTime, now, then, elapsed;
 
@@ -93,122 +95,119 @@ export class Engine {
 
         startAnimating(impl.fps);
 
-        const caster = new THREE.Raycaster();
-        const mouse = new THREE.Vector2();
-        let mousedownStart;
-        function onClick(event) {
 
-            event.preventDefault();
-            const d = new Date();
-            //console.log(mousedownStart, d.getTime(), d.getTime() - mousedownStart);
-            if (d.getTime() - mousedownStart > 300) return;
-
-
-            mouse.x = (event.clientX / renderer.domElement.offsetWidth) * 2 - 1;
-            mouse.y = -(event.clientY / renderer.domElement.offsetHeight) * 2 + 1;
-
-            caster.setFromCamera(mouse, camera);
-
-            const intersects = caster.intersectObjects(scene.children);
-
-            if (intersects.length > 0) {
-
-                const intersection = intersects[0];
-                const colorAttribute = intersection.object.geometry.getAttribute('color');
-                const face = intersection.face;
-                const i = (face.a) / 3 + 1;
-
-                if (impl.onClick != undefined) {
-                    impl.onClick(this.ca, colors, i);
-
-                    this.g.setAttribute("color", new THREE.Float32BufferAttribute(colors, 3));
-                    //m.needsUpdate = true;
-                }
-                else {
-
-                    console.log(i, 'col', this.ca.getColor(colors, i), this.ca.getNeigbors(i), this.ca.getNeigborCount(colors, i));
-                    //console.log(ca.computeNeigbors(i));
-                    const color = new THREE.Color(Math.random() * 0xff0000);
-                    colorAttribute.setXYZ(face.a, this.ca.getColor(colors, i), 0, 0);
-                    colorAttribute.setXYZ(face.b, this.ca.getColor(colors, i), 0, 0);
-                    colorAttribute.setXYZ(face.c, this.ca.getColor(colors, i), 0, 0);
-                }
-                colorAttribute.needsUpdate = true;
-
-            }
-
-
-
-        }
+        this.mousedownStart = null;
 
         window.addEventListener("mousedown", () => {
             const d = new Date();
-            mousedownStart = d.getTime();
+            this.mousedownStart = d.getTime();
         }, false);
-        window.addEventListener("click", onClick, false);
+        window.addEventListener("click", e => this.onClick(e), false);
 
     }
 
     reset() {
 
-        this.colors = [];
-        let c = new THREE.Vector3();
-
-        const count = this.g.attributes.position.count;
-
         this.ca = new CellularAutomata(this.implementation.n);
-        
-        let k = 0;
-        for (let i = 0; i < count / 3; i++) {
 
-            this.colors.push(0, 0, 0, 0, 0, 0, 0, 0, 0);
+        for (let i = 1; i <= this.ca.faceCount; i++) {
+
+            this.ca.setColorRGB(i, 1, 0, 0);
 
 
         }
-        let col = new THREE.Color();
-        this.implementation.init(this.ca, this.colors);
-        this.g.setAttribute("color", new THREE.Float32BufferAttribute(this.colors, 3));
+        //console.log('colors', this.ca.colors);
+        this.implementation.init(this.ca);
+        this.applyColors();
+        console.log("reset", this.ca);
+
 
     }
 
     update() {
 
-        let newColors = [];
         let impl = this.implementation;
         if (impl.before != undefined) {
             impl.before();
         }
 
         if (impl.loop != undefined) {
-            impl.loop(this.ca, this.colors, newColors);
+            impl.loop(this.ca);
         }
         else {
             for (let i = 1; i <= this.ca.faceCount; i++) {
-                impl.update(this.ca, this.colors, newColors, i);
+                impl.update(this.ca, i);
 
             }
         }
-
-        this.g.setAttribute("color", new THREE.Float32BufferAttribute(newColors, 3));
-        this.m.needsUpdate = true;
-        this.undos[this.undoPosition] = this.colors;
+        
+        this.undos[this.undoPosition] = this.ca.colors;
         this.undoPosition = (this.undoPosition + 1) % this.undoSize;
         this.undoMax++;
-        //console.log(historyPosition, history);
-        this.colors = newColors;
+        this.applyColors();
+
 
     }
 
-    undo() {
+    applyColors() {
+        this.ca.applyColors();
+        //console.log("applying colors", this.ca.colors, this.ca.colors.length/9);
+        this.g.setAttribute("color", new THREE.Float32BufferAttribute(this.ca.colors, 3));
+        this.m.needsUpdate = true;
+    }
 
+    undo() {
+        console.log("max", this.undoMax);
         if (this.undoMax == 0) return;
 
         this.undoPosition = (this.undoMax + this.undoPosition - 1) % this.undoMax;
-        this.colors = this.undos[this.undoPosition];
-        //console.log("colors", colors);
+        this.ca.setColors(this.undos[this.undoPosition]);
+        this.applyColors();
         this.undoMax--;
-        this.g.setAttribute("color", new THREE.Float32BufferAttribute(this.colors, 3));
-        this.m.needsUpdate = true;
+
+    }
+
+    onClick(event) {
+
+        event.preventDefault();
+        const d = new Date();
+        //console.log(mousedownStart, d.getTime(), d.getTime() - mousedownStart);
+        if (d.getTime() - this.mousedownStart > 300) return;
+
+        const caster = new THREE.Raycaster();
+        const mouse = new THREE.Vector2();
+        mouse.x = (event.clientX / this.renderer.domElement.offsetWidth) * 2 - 1;
+        mouse.y = -(event.clientY / this.renderer.domElement.offsetHeight) * 2 + 1;
+
+
+
+        caster.setFromCamera(mouse, this.camera);
+
+        const intersects = caster.intersectObjects(this.scene.children);
+
+        if (intersects.length > 0) {
+
+            const intersection = intersects[0];
+            const face = intersection.face;
+            const i = (face.a) / 3 + 1;
+
+            if (this.implementation.onClick != undefined) {
+                this.ca.setColors(this.ca.colors);
+                this.implementation.onClick(this.ca, i);
+
+                this.applyColors();
+            }
+            else {
+
+                console.log(i, 'col', this.ca.getColor(i), this.ca.getNeigbors(i), this.ca.getNeigborCount(i));
+
+            }
+
+
+        }
+
+
+
     }
 
 }

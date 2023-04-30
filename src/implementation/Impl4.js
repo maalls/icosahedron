@@ -7,43 +7,43 @@ export class Impl4 {
             name: "Debug"
         }
     }
-    onClick(ca, colors, i) {
+    onClick(ca, i) {
         console.log(i, ca.getNeigbors(i));
     }
 
-    init(ca, colors) {
+    init(ca) {
         this.current = 0;
         this.currentNeihbors = [];
         return;
     }
 
     
-    loop(ca, colors, newColors) {
+    loop(ca) {
 
         this.current++;
         console.log("current", this.current);
         for(let i = 1; i <= ca.faceCount; i++) {
-            ca.setColor(newColors, i, 0);
+            ca.setColor(i, 0);
         }
         
 
-        ca.setColorRGB(newColors, this.current, 0, 1, 0);
+        ca.setColorRGB(this.current, 0, 1, 0);
         let neighbors = ca.getNeigbors(this.current);
         neighbors.forEach(element => {
-            ca.setColor(newColors, element, 1);
+            ca.setColor(element, 1);
         });
         
     }
-    update(ca, colors, newColors, i) {
+    update(ca, i) {
 
         let neighbors = ca.getNeigbors(i);
         //console.log('check', i, this.current, neighbors);
         if(neighbors.includes(this.current)) {
             
-            ca.setColor(newColors, i, 1);
+            ca.setColor(i, 1);
         }
         else {
-            ca.setColor(newColors, i, 0);
+            ca.setColor(i, 0);
         }
     }
 }

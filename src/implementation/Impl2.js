@@ -7,40 +7,30 @@ export class Impl2 {
             name: "Game of life"
         }
     }
-    onClick(ca, colors, i) {
-        ca.setColor(colors, i, ca.getColor(colors, i) ? 0 : 1);
+    onClick(ca, i) {
+        ca.setColor( i, ca.getColor(i) ? 0 : 1);
     }
-    init(ca, colors) {
+    init(ca) {
         return;
-        let pop = Math.floor(ca.faceCount / 20);
-        let done = [];
-        let j;
-        for (let i = 1; i <= pop; i++) {
-            do {
-                j = 1 + Math.floor(Math.random() * ca.faceCount);
-            }
-            while (done.includes(j));
-            done.push(j);
-            ca.setColor(colors, j, 0);
-        }
+        
     }
-    update(ca, colors, newColors, i) {
+    update(ca, i) {
 
-        let color = ca.getColor(colors, i);
-        let neighbor = ca.getNeigborCount(colors, i);
+        let color = ca.getColor(i);
+        let neighbor = ca.getNeigborCount(i);
         
         if (neighbor == 0 || neighbor == 3) {
 
-            ca.setColor(newColors, i, 0);
+            ca.setColor(i, 0);
 
         }
         else if (neighbor == 2) {
 
-            ca.setColor(newColors, i, 1);
+            ca.setColor(i, 1);
 
         }
         else {
-            ca.setColor(newColors, i, color);
+            ca.setColor(i, color);
         }
 
     }

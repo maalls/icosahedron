@@ -7,15 +7,10 @@ export class Impl3 {
             name: "Game of life 2"
         }
     }
-    onClick(ca, colors, i) {
+    onClick(ca, i) {
         console.log("click", i);
-        ca.setColor(colors, i, !ca.getColor(colors, i));
+        ca.setColor(i, !ca.getColor(i));
         return;
-        ca.setColorRGB(colors, i, 1, 1, 0);
-        let neighbors = ca.getNeigbors(i);
-        neighbors.forEach(element => {
-            ca.setColorRGB(colors, element, 0, 0, 1);
-        });
 
     }
 
@@ -27,38 +22,28 @@ export class Impl3 {
             }
         ];
     }
-    init(ca, colors) {
-        ca.setColor(colors, 1, 1);
+    init(ca) {
+        ca.setColor(1, 1);
         return;
-        let pop = 0; //Math.floor(ca.faceCount / 1.2);
-        let done = [];
-        let j;
-        for (let i = 1; i <= pop; i++) {
-            do {
-                j = 1 + Math.floor(Math.random() * ca.faceCount);
-            }
-            while (done.includes(j));
-            done.push(j);
-            ca.setColor(colors, j, 1);
-        } 
+        
     }
-    update(ca, colors, newColors, i) {
+    update(ca, i) {
 
-        let color = ca.getColor(colors, i);
-        let neighbor = ca.getNeigborCount(colors, i);
+        let color = ca.getColor(i);
+        let neighbor = ca.getNeigborCount(i);
         
         if (neighbor == 0 || neighbor == 3) {
 
-            ca.setColor(newColors, i, 0);
+            ca.setColor(i, 0);
 
         }
         else if (neighbor == 2) {
 
-            ca.setColor(newColors, i, 1);
+            ca.setColor(i, 1);
 
         }
         else {
-            ca.setColor(newColors, i, 1);
+            ca.setColor(i, 1);
         }
 
     }

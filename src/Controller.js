@@ -11,7 +11,8 @@ export class Controller {
 
         let impls = [new Impl5(), new Impl1(), new Impl2(), new Impl3(), new Impl4()];
         let params = new URLSearchParams(window.location.search);
-        let implIndex = params.has('impl') ? params.get('impl') : 0;
+        
+        /*let implIndex = params.has('impl') ? params.get('impl') : 0;
         let impl = impls[implIndex];
 
         engine.setImplementation(impl);
@@ -44,6 +45,8 @@ export class Controller {
             engine.setImplementation(impl);
             engine.reset();
         }
+*/
+        /*
         document.getElementById('impl-settings').appendChild(implSelect);
 
         if (impl.hasOwnProperty('getUiSetting')) {
@@ -61,24 +64,41 @@ export class Controller {
                 });
 
             }
-        }
+        }*/
 
-        
-
-        document.getElementById('player').innerText = this.play ? 'pause' : 'play';
-        document.getElementById('player').onclick = (event) => {
+        const mainDiv = document.createElement('div');
+        mainDiv.style.position = 'absolute';
+        mainDiv.style.top = 0;
+        mainDiv.style.left = 0;
+        mainDiv.style.padding = 5;
+        document.body.appendChild(mainDiv);
+        const playButton = document.createElement('button');
+        playButton.innerText = engine.isPlaying ? 'pause' : 'play';
+        playButton.onclick = (event) => {
             event.preventDefault();
             if (engine.isPlaying) {
                 engine.pause(); 
-                document.getElementById('player').innerText = 'play';
+                playButton.innerText = 'play';
             }
             else {
                 engine.play();
-                document.getElementById('player').innerText = 'pause';
+                playButton.innerText = 'pause';
             }
         }
+        mainDiv.appendChild(playButton);
 
-        document.getElementById('step').onclick = (event) => {
+
+        ['update', 'undo', 'reset', 'clear'].forEach(action => {
+            let button = document.createElement('button');
+            button.innerText = action;
+            button.onclick = e => {
+                e.preventDefault();
+                engine[action]();
+            }
+            mainDiv.appendChild(button);
+        });
+
+        /*document.getElementById('step').onclick = (event) => {
             event.preventDefault();
             engine.update();
         }
@@ -87,10 +107,7 @@ export class Controller {
             event.preventDefault();
             engine.undo();
         }
-        document.getElementById('controller').onclick = (event) => {
-            event.preventDefault();
-            event.stopPropagation();
-        }
+        
 
         document.getElementById('reset').onclick = (event) => {
             engine.reset();
@@ -100,7 +117,7 @@ export class Controller {
             engine.clear();
             engine.applyColors();
             
-        }
+        }*/
 
 
     }

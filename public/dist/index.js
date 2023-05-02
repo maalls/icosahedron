@@ -6,9 +6,7 @@
  * or disable the default devtool with "devtool: false".
  * If you are looking for production-ready output files, see mode: "production" (https://webpack.js.org/configuration/mode/).
  */
-/******/ (() => { // webpackBootstrap
-/******/ 	"use strict";
-/******/ 	var __webpack_modules__ = ({
+/******/ var __webpack_modules__ = ({
 
 /***/ "./src/CellularAutomata.js":
 /*!*********************************!*\
@@ -26,7 +24,7 @@ eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpac
   \***************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpack_require__.d(__webpack_exports__, {\n/* harmony export */   \"Controller\": () => (/* binding */ Controller)\n/* harmony export */ });\n/* harmony import */ var _implementation_Impl1__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./implementation/Impl1 */ \"./src/implementation/Impl1.js\");\n/* harmony import */ var _implementation_Impl2__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./implementation/Impl2 */ \"./src/implementation/Impl2.js\");\n/* harmony import */ var _implementation_Impl3__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./implementation/Impl3 */ \"./src/implementation/Impl3.js\");\n/* harmony import */ var _implementation_Impl4__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./implementation/Impl4 */ \"./src/implementation/Impl4.js\");\n/* harmony import */ var _implementation_Impl5__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./implementation/Impl5 */ \"./src/implementation/Impl5.js\");\n\n\n\n\n\n\nclass Controller {\n\n\n    constructor(engine) {\n\n        let impls = [new _implementation_Impl5__WEBPACK_IMPORTED_MODULE_4__.Impl5(), new _implementation_Impl1__WEBPACK_IMPORTED_MODULE_0__.Impl1(), new _implementation_Impl2__WEBPACK_IMPORTED_MODULE_1__.Impl2(), new _implementation_Impl3__WEBPACK_IMPORTED_MODULE_2__.Impl3(), new _implementation_Impl4__WEBPACK_IMPORTED_MODULE_3__.Impl4()];\n        let params = new URLSearchParams(window.location.search);\n        let implIndex = params.has('impl') ? params.get('impl') : 0;\n        let impl = impls[implIndex];\n\n        engine.setImplementation(impl);\n\n        let play = params.has('autoplay') && parseInt(params.get('autoplay')) ? true : false;\n\n        if (play) {\n            engine.play();\n        }\n\n        const implSelect = document.createElement('select');\n\n\n        impls.forEach((impl, key) => {\n            console.log(impl);\n            const option = document.createElement('option');\n            option.value = key;\n            option.innerHTML = impl.ui.name;\n            if (key == implIndex) {\n                option.selected = \"selected\";\n            }\n            implSelect.appendChild(option);\n        });\n        implSelect.onchange = function (event) {\n            console.log(this.selectedIndex);\n            impl = impls[this.selectedIndex];\n            params.set('impl', this.selectedIndex);\n            var newRelativePathQuery = window.location.pathname + '?' + params.toString();\n            history.pushState(null, '', newRelativePathQuery);\n            engine.setImplementation(impl);\n            engine.reset();\n        }\n        document.getElementById('impl-settings').appendChild(implSelect);\n\n        if (impl.hasOwnProperty('getUiSetting')) {\n            let uiSettings = impl.getUiSetting();\n            if (uiSettings != undefined) {\n\n                uiSettings.forEach(setting => {\n\n                    switch (setting.type) {\n\n                        case 'select':\n\n\n                    }\n                });\n\n            }\n        }\n\n        \n\n        document.getElementById('player').innerText = this.play ? 'pause' : 'play';\n        document.getElementById('player').onclick = (event) => {\n            event.preventDefault();\n            if (engine.isPlaying) {\n                engine.pause(); \n                document.getElementById('player').innerText = 'play';\n            }\n            else {\n                engine.play();\n                document.getElementById('player').innerText = 'pause';\n            }\n        }\n\n        document.getElementById('step').onclick = (event) => {\n            event.preventDefault();\n            engine.update();\n        }\n\n        document.getElementById('undo').onclick = (event) => {\n            event.preventDefault();\n            engine.undo();\n        }\n        document.getElementById('controller').onclick = (event) => {\n            event.preventDefault();\n            event.stopPropagation();\n        }\n\n        document.getElementById('reset').onclick = (event) => {\n            engine.reset();\n            \n        }\n        document.getElementById('clear').onclick = (event) => {\n            engine.clear();\n            engine.applyColors();\n            \n        }\n\n\n    }\n\n    \n\n}\n\n//# sourceURL=webpack:///./src/Controller.js?");
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpack_require__.d(__webpack_exports__, {\n/* harmony export */   \"Controller\": () => (/* binding */ Controller)\n/* harmony export */ });\n/* harmony import */ var _implementation_Impl1__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./implementation/Impl1 */ \"./src/implementation/Impl1.js\");\n/* harmony import */ var _implementation_Impl2__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./implementation/Impl2 */ \"./src/implementation/Impl2.js\");\n/* harmony import */ var _implementation_Impl3__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./implementation/Impl3 */ \"./src/implementation/Impl3.js\");\n/* harmony import */ var _implementation_Impl4__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./implementation/Impl4 */ \"./src/implementation/Impl4.js\");\n/* harmony import */ var _implementation_Impl5__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./implementation/Impl5 */ \"./src/implementation/Impl5.js\");\n\n\n\n\n\n\nclass Controller {\n\n\n    constructor(engine) {\n\n        let impls = [new _implementation_Impl5__WEBPACK_IMPORTED_MODULE_4__.Impl5(), new _implementation_Impl1__WEBPACK_IMPORTED_MODULE_0__.Impl1(), new _implementation_Impl2__WEBPACK_IMPORTED_MODULE_1__.Impl2(), new _implementation_Impl3__WEBPACK_IMPORTED_MODULE_2__.Impl3(), new _implementation_Impl4__WEBPACK_IMPORTED_MODULE_3__.Impl4()];\n        let params = new URLSearchParams(window.location.search);\n        \n        /*let implIndex = params.has('impl') ? params.get('impl') : 0;\n        let impl = impls[implIndex];\n\n        engine.setImplementation(impl);\n\n        let play = params.has('autoplay') && parseInt(params.get('autoplay')) ? true : false;\n\n        if (play) {\n            engine.play();\n        }\n\n        const implSelect = document.createElement('select');\n\n\n        impls.forEach((impl, key) => {\n            console.log(impl);\n            const option = document.createElement('option');\n            option.value = key;\n            option.innerHTML = impl.ui.name;\n            if (key == implIndex) {\n                option.selected = \"selected\";\n            }\n            implSelect.appendChild(option);\n        });\n        implSelect.onchange = function (event) {\n            console.log(this.selectedIndex);\n            impl = impls[this.selectedIndex];\n            params.set('impl', this.selectedIndex);\n            var newRelativePathQuery = window.location.pathname + '?' + params.toString();\n            history.pushState(null, '', newRelativePathQuery);\n            engine.setImplementation(impl);\n            engine.reset();\n        }\n*/\n        /*\n        document.getElementById('impl-settings').appendChild(implSelect);\n\n        if (impl.hasOwnProperty('getUiSetting')) {\n            let uiSettings = impl.getUiSetting();\n            if (uiSettings != undefined) {\n\n                uiSettings.forEach(setting => {\n\n                    switch (setting.type) {\n\n                        case 'select':\n\n\n                    }\n                });\n\n            }\n        }*/\n\n        const mainDiv = document.createElement('div');\n        mainDiv.style.position = 'absolute';\n        mainDiv.style.top = 0;\n        mainDiv.style.left = 0;\n        mainDiv.style.padding = 5;\n        document.body.appendChild(mainDiv);\n        const playButton = document.createElement('button');\n        playButton.innerText = engine.isPlaying ? 'pause' : 'play';\n        playButton.onclick = (event) => {\n            event.preventDefault();\n            if (engine.isPlaying) {\n                engine.pause(); \n                playButton.innerText = 'play';\n            }\n            else {\n                engine.play();\n                playButton.innerText = 'pause';\n            }\n        }\n        mainDiv.appendChild(playButton);\n\n\n        ['update', 'undo', 'reset', 'clear'].forEach(action => {\n            let button = document.createElement('button');\n            button.innerText = action;\n            button.onclick = e => {\n                e.preventDefault();\n                engine[action]();\n            }\n            mainDiv.appendChild(button);\n        });\n\n        /*document.getElementById('step').onclick = (event) => {\n            event.preventDefault();\n            engine.update();\n        }\n\n        document.getElementById('undo').onclick = (event) => {\n            event.preventDefault();\n            engine.undo();\n        }\n        \n\n        document.getElementById('reset').onclick = (event) => {\n            engine.reset();\n            \n        }\n        document.getElementById('clear').onclick = (event) => {\n            engine.clear();\n            engine.applyColors();\n            \n        }*/\n\n\n    }\n\n    \n\n}\n\n//# sourceURL=webpack:///./src/Controller.js?");
 
 /***/ }),
 
@@ -36,7 +34,7 @@ eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpac
   \***********************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpack_require__.d(__webpack_exports__, {\n/* harmony export */   \"Engine\": () => (/* binding */ Engine)\n/* harmony export */ });\n/* harmony import */ var three__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! three */ \"./node_modules/three/build/three.module.js\");\n/* harmony import */ var _CellularAutomata__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./CellularAutomata */ \"./src/CellularAutomata.js\");\n/* harmony import */ var three_addons_controls_OrbitControls_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! three/addons/controls/OrbitControls.js */ \"./node_modules/three/examples/jsm/controls/OrbitControls.js\");\n\n\n\n\n\n\n\nclass Engine {\n    constructor() {\n        this.isPlaying = false;\n    }\n    setImplementation(implementation) {\n        this.implementation = implementation;\n    }\n    setRenderer(renderer) {\n        this.renderer = renderer;\n    }\n    play() {\n        this.isPlaying = true;\n    }\n    pause() {\n        this.isPlaying = false;\n    }\n    init() {\n\n        this.renderer = new three__WEBPACK_IMPORTED_MODULE_1__.WebGLRenderer();\n        this.renderer.setClearColor(0x404040);\n        this.renderer.setSize(innerWidth, innerHeight);\n        document.body.appendChild(this.renderer.domElement);\n        let impl = this.implementation;\n\n        const n = impl.n;\n\n        this.g = new three__WEBPACK_IMPORTED_MODULE_1__.IcosahedronGeometry(5, n);\n        this.camera = new three__WEBPACK_IMPORTED_MODULE_1__.PerspectiveCamera(60, innerWidth / innerHeight, 1, 100);\n        this.camera.position.set(0, 10, 10);\n\n        let controls = new three_addons_controls_OrbitControls_js__WEBPACK_IMPORTED_MODULE_2__.OrbitControls(this.camera, this.renderer.domElement);\n        controls.minDistance = 6;\n\n        this.scene = new three__WEBPACK_IMPORTED_MODULE_1__.Scene();\n        this.m = new three__WEBPACK_IMPORTED_MODULE_1__.MeshBasicMaterial({ vertexColors: true });\n        let o = new three__WEBPACK_IMPORTED_MODULE_1__.Mesh(this.g, this.m);\n        this.scene.add(o);\n        this.reset();\n        this.renderer.setAnimationLoop(_ => {\n            this.renderer.render(this.scene, this.camera);\n        })\n        \n\n        this.undos = [];\n        this.undoPosition = 0;\n        this.undoSize = 30;\n        this.undoMax = 0;\n\n\n\n        var fpsInterval, startTime, now, then, elapsed;\n\n        function startAnimating(fps) {\n            fpsInterval = 1000 / fps;\n            then = Date.now();\n            startTime = then;\n            animate();\n        }\n\n\n        const animate = (t) => {\n            //console.log(\"u\");\n\n            requestAnimationFrame(animate);\n\n            now = Date.now();\n            elapsed = now - then;\n\n            // if enough time has elapsed, draw the next frame\n            fpsInterval = 1000 / impl.fps;\n            if (elapsed > fpsInterval) {\n\n                // Get ready for next frame by setting then=now, but also adjust for your\n                // specified fpsInterval not being a multiple of RAF's interval (16.7ms)\n                then = now - (elapsed % fpsInterval);\n\n                // Put your drawing code here\n                if (this.isPlaying) this.update();\n            }\n\n        }\n\n        startAnimating(impl.fps);\n\n\n        this.mousedownStart = null;\n\n        window.addEventListener(\"mousedown\", () => {\n            const d = new Date();\n            this.mousedownStart = d.getTime();\n        }, false);\n        window.addEventListener(\"click\", e => this.onClick(e), false);\n\n\n        window.addEventListener(\"resize\", event => {\n\n            this.renderer.setSize(innerWidth, innerHeight);\n            this.camera.aspect = innerWidth / innerHeight;\n            this.camera.updateProjectionMatrix();\n\n\n        }, false);\n    }\n\n    reset() {\n\n        this.ca = new _CellularAutomata__WEBPACK_IMPORTED_MODULE_0__.CellularAutomata(this.implementation.n);\n\n        this.clear();\n        //console.log('colors', this.ca.colors);\n        this.implementation.init(this.ca);\n        this.applyColors();\n\n    }\n\n    clear() {\n        for (let i = 1; i <= this.ca.faceCount; i++) {\n            this.ca.setColorRGB(i, 0, 0, 0);\n        }\n        \n    }\n\n    update() {\n\n        let impl = this.implementation;\n        if (impl.before != undefined) {\n            impl.before();\n        }\n\n        if (impl.loop != undefined) {\n            impl.loop(this.ca);\n        }\n        else {\n            for (let i = 1; i <= this.ca.faceCount; i++) {\n                impl.update(this.ca, i);\n\n            }\n        }\n        \n        this.undos[this.undoPosition] = this.ca.colors;\n        this.undoPosition = (this.undoPosition + 1) % this.undoSize;\n        this.undoMax++;\n        this.applyColors();\n\n\n    }\n\n    applyColors() {\n        this.ca.applyColors();\n        //console.log(\"applying colors\", this.ca.colors, this.ca.colors.length/9);\n        this.g.setAttribute(\"color\", new three__WEBPACK_IMPORTED_MODULE_1__.Float32BufferAttribute(this.ca.colors, 3));\n        this.m.needsUpdate = true;\n    }\n\n    undo() {\n\n        if (this.undoMax == 0) return;\n        this.undoPosition = (this.undoMax + this.undoPosition - 1) % this.undoMax;\n        this.ca.setColors(this.undos[this.undoPosition]);\n        this.applyColors();\n        this.undoMax--;\n\n    }\n\n    onClick(event) {\n\n        event.preventDefault();\n        const d = new Date();\n        //console.log(mousedownStart, d.getTime(), d.getTime() - mousedownStart);\n        if (d.getTime() - this.mousedownStart > 300) return;\n\n        const caster = new three__WEBPACK_IMPORTED_MODULE_1__.Raycaster();\n        const mouse = new three__WEBPACK_IMPORTED_MODULE_1__.Vector2();\n        mouse.x = (event.clientX / this.renderer.domElement.offsetWidth) * 2 - 1;\n        mouse.y = -(event.clientY / this.renderer.domElement.offsetHeight) * 2 + 1;\n\n\n\n        caster.setFromCamera(mouse, this.camera);\n\n        const intersects = caster.intersectObjects(this.scene.children);\n\n        if (intersects.length > 0) {\n\n            const intersection = intersects[0];\n            const face = intersection.face;\n            const i = (face.a) / 3 + 1;\n\n            if (this.implementation.onClick != undefined) {\n                this.ca.setColors(this.ca.colors);\n                this.implementation.onClick(this.ca, i);\n                this.applyColors();\n            }\n            else {\n\n                console.log(i, 'col', this.ca.getColor(i), this.ca.getNeigbors(i), this.ca.getNeigborCount(i));\n\n            }\n\n\n        }\n\n\n\n    }\n\n}\n\n\n\n//# sourceURL=webpack:///./src/Engine.js?");
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpack_require__.d(__webpack_exports__, {\n/* harmony export */   \"Engine\": () => (/* binding */ Engine)\n/* harmony export */ });\n/* harmony import */ var three__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! three */ \"./node_modules/three/build/three.module.js\");\n/* harmony import */ var _CellularAutomata__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./CellularAutomata */ \"./src/CellularAutomata.js\");\n/* harmony import */ var three_addons_controls_OrbitControls_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! three/addons/controls/OrbitControls.js */ \"./node_modules/three/examples/jsm/controls/OrbitControls.js\");\n\n\n\n\n\n\n\nclass Engine {\n    constructor() {\n        this.isPlaying = false;\n        \n    }\n    setImplementation(implementation) {\n        this.implementation = implementation;\n    }\n    setRenderer(renderer) {\n        this.renderer = renderer;\n    }\n    \n    play() {\n        this.isPlaying = true;\n    }\n    pause() {\n        this.isPlaying = false;\n    }\n    init() {\n\n        this.renderer = new three__WEBPACK_IMPORTED_MODULE_1__.WebGLRenderer();\n        this.renderer.setClearColor(0x404040);\n        this.renderer.setSize(innerWidth, innerHeight);\n        document.body.appendChild(this.renderer.domElement);\n        let impl = this.implementation;\n\n        const n = impl.n;\n\n        this.g = new three__WEBPACK_IMPORTED_MODULE_1__.IcosahedronGeometry(5, n);\n        this.camera = new three__WEBPACK_IMPORTED_MODULE_1__.PerspectiveCamera(60, innerWidth / innerHeight, 1, 100);\n        this.camera.position.set(0, 10, 10);\n\n        let controls = new three_addons_controls_OrbitControls_js__WEBPACK_IMPORTED_MODULE_2__.OrbitControls(this.camera, this.renderer.domElement);\n        controls.minDistance = 6;\n\n        this.scene = new three__WEBPACK_IMPORTED_MODULE_1__.Scene();\n        this.m = new three__WEBPACK_IMPORTED_MODULE_1__.MeshBasicMaterial({ vertexColors: true });\n        let o = new three__WEBPACK_IMPORTED_MODULE_1__.Mesh(this.g, this.m);\n        this.scene.add(o);\n        this.reset();\n        this.renderer.setAnimationLoop(_ => {\n            this.renderer.render(this.scene, this.camera);\n        })\n        \n\n        this.undos = [];\n        this.undoPosition = 0;\n        this.undoSize = 30;\n        this.undoMax = 0;\n\n\n\n        var fpsInterval, startTime, now, then, elapsed;\n\n        function startAnimating(fps) {\n            fpsInterval = 1000 / fps;\n            then = Date.now();\n            startTime = then;\n            animate();\n        }\n\n\n        const animate = (t) => {\n            //console.log(\"u\");\n\n            requestAnimationFrame(animate);\n\n            now = Date.now();\n            elapsed = now - then;\n\n            // if enough time has elapsed, draw the next frame\n            fpsInterval = 1000 / impl.fps;\n            if (elapsed > fpsInterval) {\n\n                // Get ready for next frame by setting then=now, but also adjust for your\n                // specified fpsInterval not being a multiple of RAF's interval (16.7ms)\n                then = now - (elapsed % fpsInterval);\n\n                // Put your drawing code here\n                if (this.isPlaying) this.update();\n            }\n\n        }\n\n        startAnimating(impl.fps);\n\n\n        this.mousedownStart = null;\n\n        window.addEventListener(\"mousedown\", () => {\n            const d = new Date();\n            this.mousedownStart = d.getTime();\n        }, false);\n        window.addEventListener(\"click\", e => this.onClick(e), false);\n\n\n        window.addEventListener(\"resize\", event => {\n\n            this.renderer.setSize(innerWidth, innerHeight);\n            this.camera.aspect = innerWidth / innerHeight;\n            this.camera.updateProjectionMatrix();\n\n\n        }, false);\n    }\n\n    reset() {\n\n        this.ca = new _CellularAutomata__WEBPACK_IMPORTED_MODULE_0__.CellularAutomata(this.implementation.n);\n\n        this.clear();\n        //console.log('colors', this.ca.colors);\n        if(this.implementation.init != undefined) {\n            this.implementation.init(this.ca);\n        }\n        if(this.implementation.initFace != undefined) {\n            for(let i = 1; i < this.ca.faceCount; i++) {\n                this.implementation.initFace(this.ca, i);\n            }\n        }\n        this.applyColors();\n\n    }\n\n    clear() {\n        for (let i = 1; i <= this.ca.faceCount; i++) {\n            this.ca.setColorRGB(i, 0, 0, 0);\n        }\n        \n    }\n\n    update() {\n\n        let impl = this.implementation;\n        if (impl.before != undefined) {\n            impl.before();\n        }\n\n        if (impl.loop != undefined) {\n            impl.loop(this.ca);\n        }\n        else {\n            for (let i = 1; i <= this.ca.faceCount; i++) {\n                impl.update(this.ca, i);\n\n            }\n        }\n        \n        this.undos[this.undoPosition] = this.ca.colors;\n        this.undoPosition = (this.undoPosition + 1) % this.undoSize;\n        this.undoMax++;\n        this.applyColors();\n\n\n    }\n\n    applyColors() {\n        this.ca.applyColors();\n        //console.log(\"applying colors\", this.ca.colors, this.ca.colors.length/9);\n        this.g.setAttribute(\"color\", new three__WEBPACK_IMPORTED_MODULE_1__.Float32BufferAttribute(this.ca.colors, 3));\n        this.m.needsUpdate = true;\n    }\n\n    undo() {\n\n        if (this.undoMax == 0) return;\n        this.undoPosition = (this.undoMax + this.undoPosition - 1) % this.undoMax;\n        this.ca.setColors(this.undos[this.undoPosition]);\n        this.applyColors();\n        this.undoMax--;\n\n    }\n\n    onClick(event) {\n\n        event.preventDefault();\n        const d = new Date();\n        //console.log(mousedownStart, d.getTime(), d.getTime() - mousedownStart);\n        if (d.getTime() - this.mousedownStart > 300) return;\n\n        const caster = new three__WEBPACK_IMPORTED_MODULE_1__.Raycaster();\n        const mouse = new three__WEBPACK_IMPORTED_MODULE_1__.Vector2();\n        mouse.x = (event.clientX / this.renderer.domElement.offsetWidth) * 2 - 1;\n        mouse.y = -(event.clientY / this.renderer.domElement.offsetHeight) * 2 + 1;\n\n\n\n        caster.setFromCamera(mouse, this.camera);\n\n        const intersects = caster.intersectObjects(this.scene.children);\n\n        if (intersects.length > 0) {\n\n            const intersection = intersects[0];\n            const face = intersection.face;\n            const i = (face.a) / 3 + 1;\n\n            if (this.implementation.onClick != undefined) {\n                this.ca.setColors(this.ca.colors);\n                this.implementation.onClick(this.ca, i);\n                this.applyColors();\n            }\n            else {\n\n                console.log(i, 'col', this.ca.getColor(i), this.ca.getNeigbors(i), this.ca.getNeigborCount(i));\n\n            }\n\n\n        }\n\n\n\n    }\n\n}\n\n\n\n//# sourceURL=webpack:///./src/Engine.js?");
 
 /***/ }),
 
@@ -120,67 +118,65 @@ eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpac
 
 /***/ })
 
-/******/ 	});
+/******/ });
 /************************************************************************/
-/******/ 	// The module cache
-/******/ 	var __webpack_module_cache__ = {};
-/******/ 	
-/******/ 	// The require function
-/******/ 	function __webpack_require__(moduleId) {
-/******/ 		// Check if module is in cache
-/******/ 		var cachedModule = __webpack_module_cache__[moduleId];
-/******/ 		if (cachedModule !== undefined) {
-/******/ 			return cachedModule.exports;
-/******/ 		}
-/******/ 		// Create a new module (and put it into the cache)
-/******/ 		var module = __webpack_module_cache__[moduleId] = {
-/******/ 			// no module.id needed
-/******/ 			// no module.loaded needed
-/******/ 			exports: {}
-/******/ 		};
-/******/ 	
-/******/ 		// Execute the module function
-/******/ 		__webpack_modules__[moduleId](module, module.exports, __webpack_require__);
-/******/ 	
-/******/ 		// Return the exports of the module
-/******/ 		return module.exports;
+/******/ // The module cache
+/******/ var __webpack_module_cache__ = {};
+/******/ 
+/******/ // The require function
+/******/ function __webpack_require__(moduleId) {
+/******/ 	// Check if module is in cache
+/******/ 	var cachedModule = __webpack_module_cache__[moduleId];
+/******/ 	if (cachedModule !== undefined) {
+/******/ 		return cachedModule.exports;
 /******/ 	}
-/******/ 	
+/******/ 	// Create a new module (and put it into the cache)
+/******/ 	var module = __webpack_module_cache__[moduleId] = {
+/******/ 		// no module.id needed
+/******/ 		// no module.loaded needed
+/******/ 		exports: {}
+/******/ 	};
+/******/ 
+/******/ 	// Execute the module function
+/******/ 	__webpack_modules__[moduleId](module, module.exports, __webpack_require__);
+/******/ 
+/******/ 	// Return the exports of the module
+/******/ 	return module.exports;
+/******/ }
+/******/ 
 /************************************************************************/
-/******/ 	/* webpack/runtime/define property getters */
-/******/ 	(() => {
-/******/ 		// define getter functions for harmony exports
-/******/ 		__webpack_require__.d = (exports, definition) => {
-/******/ 			for(var key in definition) {
-/******/ 				if(__webpack_require__.o(definition, key) && !__webpack_require__.o(exports, key)) {
-/******/ 					Object.defineProperty(exports, key, { enumerable: true, get: definition[key] });
-/******/ 				}
+/******/ /* webpack/runtime/define property getters */
+/******/ (() => {
+/******/ 	// define getter functions for harmony exports
+/******/ 	__webpack_require__.d = (exports, definition) => {
+/******/ 		for(var key in definition) {
+/******/ 			if(__webpack_require__.o(definition, key) && !__webpack_require__.o(exports, key)) {
+/******/ 				Object.defineProperty(exports, key, { enumerable: true, get: definition[key] });
 /******/ 			}
-/******/ 		};
-/******/ 	})();
-/******/ 	
-/******/ 	/* webpack/runtime/hasOwnProperty shorthand */
-/******/ 	(() => {
-/******/ 		__webpack_require__.o = (obj, prop) => (Object.prototype.hasOwnProperty.call(obj, prop))
-/******/ 	})();
-/******/ 	
-/******/ 	/* webpack/runtime/make namespace object */
-/******/ 	(() => {
-/******/ 		// define __esModule on exports
-/******/ 		__webpack_require__.r = (exports) => {
-/******/ 			if(typeof Symbol !== 'undefined' && Symbol.toStringTag) {
-/******/ 				Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
-/******/ 			}
-/******/ 			Object.defineProperty(exports, '__esModule', { value: true });
-/******/ 		};
-/******/ 	})();
-/******/ 	
+/******/ 		}
+/******/ 	};
+/******/ })();
+/******/ 
+/******/ /* webpack/runtime/hasOwnProperty shorthand */
+/******/ (() => {
+/******/ 	__webpack_require__.o = (obj, prop) => (Object.prototype.hasOwnProperty.call(obj, prop))
+/******/ })();
+/******/ 
+/******/ /* webpack/runtime/make namespace object */
+/******/ (() => {
+/******/ 	// define __esModule on exports
+/******/ 	__webpack_require__.r = (exports) => {
+/******/ 		if(typeof Symbol !== 'undefined' && Symbol.toStringTag) {
+/******/ 			Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
+/******/ 		}
+/******/ 		Object.defineProperty(exports, '__esModule', { value: true });
+/******/ 	};
+/******/ })();
+/******/ 
 /************************************************************************/
-/******/ 	
-/******/ 	// startup
-/******/ 	// Load entry module and return exports
-/******/ 	// This entry module can't be inlined because the eval devtool is used.
-/******/ 	var __webpack_exports__ = __webpack_require__("./src/index.js");
-/******/ 	
-/******/ })()
-;
+/******/ 
+/******/ // startup
+/******/ // Load entry module and return exports
+/******/ // This entry module can't be inlined because the eval devtool is used.
+/******/ var __webpack_exports__ = __webpack_require__("./src/index.js");
+/******/ 

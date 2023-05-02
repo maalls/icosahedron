@@ -8,6 +8,7 @@ import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 export class Engine {
     constructor() {
         this.isPlaying = false;
+        
     }
     setImplementation(implementation) {
         this.implementation = implementation;
@@ -15,6 +16,7 @@ export class Engine {
     setRenderer(renderer) {
         this.renderer = renderer;
     }
+    
     play() {
         this.isPlaying = true;
     }
@@ -115,7 +117,14 @@ export class Engine {
 
         this.clear();
         //console.log('colors', this.ca.colors);
-        this.implementation.init(this.ca);
+        if(this.implementation.init != undefined) {
+            this.implementation.init(this.ca);
+        }
+        if(this.implementation.initFace != undefined) {
+            for(let i = 1; i < this.ca.faceCount; i++) {
+                this.implementation.initFace(this.ca, i);
+            }
+        }
         this.applyColors();
 
     }

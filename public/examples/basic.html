@@ -1,0 +1,53 @@
+<html>
+
+<head>
+
+    <link rel="stylesheet" type="text/css" href="../dist/main.css">
+
+</head>
+
+<body>
+    
+    <script type="module">
+        import {Engine} from '../dist/engine.js';
+        import {Controller} from '../dist/controller.js';
+
+        const impl = {
+            "n": 150,
+            "fps": 8,
+            "init": (ca) => {
+
+                
+                ca.setColorRGB(1, 1,0,0);
+                
+                
+            },
+            "update": (ca, i) => {
+                //ca.setColorRGB(i, Math.random(), Math.random(), Math.random());
+                let neighbors = ca.getNeigbors(i);
+                let hasRed = false;
+                neighbors.forEach(el => {
+                    let color = ca.getColorRGB(el);
+                    if(color[0] > 0) {
+                        hasRed = true;
+                    }
+                });
+                if(hasRed) {
+                    ca.setColorRGB(i, 1,0,0);
+                }
+                else {
+                    ca.setColorRGB(i, 0,0,0);
+                }
+            }
+        }
+
+        let engine = new Engine();
+        engine.setImplementation(impl);
+        engine.init();
+        engine.isPlaying = true;
+        let controller = new Controller(engine);
+
+    </script>
+</body>
+
+</html>

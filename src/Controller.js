@@ -12,7 +12,7 @@ export class Controller {
         let impls = [new Impl5(), new Impl1(), new Impl2(), new Impl3(), new Impl4()];
         let params = new URLSearchParams(window.location.search);
         
-        /*let implIndex = params.has('impl') ? params.get('impl') : 0;
+        let implIndex = params.has('impl') ? params.get('impl') : 0;
         let impl = impls[implIndex];
 
         engine.setImplementation(impl);
@@ -45,8 +45,8 @@ export class Controller {
             engine.setImplementation(impl);
             engine.reset();
         }
-*/
-        /*
+
+        
         document.getElementById('impl-settings').appendChild(implSelect);
 
         if (impl.hasOwnProperty('getUiSetting')) {
@@ -64,7 +64,7 @@ export class Controller {
                 });
 
             }
-        }*/
+        }
 
         const mainDiv = document.createElement('div');
         mainDiv.style.position = 'absolute';
@@ -88,7 +88,7 @@ export class Controller {
         mainDiv.appendChild(playButton);
 
 
-        ['update', 'undo', 'reset', 'clear'].forEach(action => {
+        ['step', 'undo', 'reset', 'clear'].forEach(action => {
             let button = document.createElement('button');
             button.innerText = action;
             button.onclick = e => {

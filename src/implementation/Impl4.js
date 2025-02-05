@@ -34,7 +34,7 @@ export class Impl4 {
         });
         
     }
-    update(ca, i) {
+    step(ca, i) {
 
         let neighbors = ca.getNeigbors(i);
         //console.log('check', i, this.current, neighbors);

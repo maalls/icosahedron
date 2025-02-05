@@ -27,7 +27,7 @@ export class Impl3 {
         return;
         
     }
-    update(ca, i) {
+    step(ca, i) {
 
         let color = ca.getColor(i);
         let neighbor = ca.getNeigborCount(i);

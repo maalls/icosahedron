@@ -64,7 +64,7 @@ export class Impl5 {
         }
 
     }
-    update(ca, i) {
+    step(ca, i) {
 
         let color = ca.getColorRGB(i);
         let newColor;

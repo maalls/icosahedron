@@ -84,7 +84,7 @@ export class Engine {
                 then = now - (elapsed % fpsInterval);
 
                 // Put your drawing code here
-                if (this.isPlaying) this.update();
+                if (this.isPlaying) this.step();
             }
 
         }
@@ -133,10 +133,11 @@ export class Engine {
         for (let i = 1; i <= this.ca.faceCount; i++) {
             this.ca.setColorRGB(i, 0, 0, 0);
         }
+        //this.applyColors();
         
     }
 
-    update() {
+    step() {
 
         let impl = this.implementation;
         if (impl.before != undefined) {
@@ -148,7 +149,7 @@ export class Engine {
         }
         else {
             for (let i = 1; i <= this.ca.faceCount; i++) {
-                impl.update(this.ca, i);
+                impl.step(this.ca, i);
 
             }
         }
@@ -163,7 +164,7 @@ export class Engine {
 
     applyColors() {
         this.ca.applyColors();
-        //console.log("applying colors", this.ca.colors, this.ca.colors.length/9);
+        console.log("applying colors", this.ca.colors, this.ca.colors.length/9);
         this.g.setAttribute("color", new THREE.Float32BufferAttribute(this.ca.colors, 3));
         this.m.needsUpdate = true;
     }

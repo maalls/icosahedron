@@ -15,6 +15,13 @@ module.exports = {
         outputModule: true
       },
     mode: 'development',
-    watch: true
+    watch: true,
+    devServer: {
+        static: './public',  // Serve files from 'dist' folder
+        hot: true,         // Enable Hot Module Replacement (HMR)
+        liveReload: true,  // Reload page when files change
+        port: 3000,        // Run on http://localhost:3000
+        open: true         // Open browser automatically
+      }
 
 };

@@ -49,22 +49,7 @@ export class Controller {
         
         document.getElementById('impl-settings').appendChild(implSelect);
 
-        if (impl.hasOwnProperty('getUiSetting')) {
-            let uiSettings = impl.getUiSetting();
-            if (uiSettings != undefined) {
-
-                uiSettings.forEach(setting => {
-
-                    switch (setting.type) {
-
-                        case 'select':
-
-
-                    }
-                });
-
-            }
-        }
+        
 
         const mainDiv = document.createElement('div');
         mainDiv.style.position = 'absolute';
@@ -96,6 +81,7 @@ export class Controller {
                 engine[action]();
             }
             mainDiv.appendChild(button);
+            //alert("OK");
         });
 
         /*document.getElementById('step').onclick = (event) => {

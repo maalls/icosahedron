@@ -1,4 +1,36 @@
-body{
-    overflow: hidden;
-    margin: 0;
+body {
+  overflow: hidden;
+  margin: 0;
+}
+
+button {
+  font-size: 16px;
+  /* Default size */
+  padding: 8px 16px;
+  border-radius: 5px;
+}
+
+#impl-settings {
+  margin-top: 50px;
+  margin-left: 8px;
+  
+}
+#impl-settings select {
+  font-size: 16px;
+}
+
+/* Increase size for mobile screens */
+@media (max-width: 768px) {
+  button {
+    font-size: 20px;
+    /* Larger text */
+    padding: 12px 24px;
   }
+  #impl-settings {
+    margin-top: 60px;
+    font-size: 20px;
+  }
+  #impl-settings select {
+    font-size: 20px;
+  }
+}

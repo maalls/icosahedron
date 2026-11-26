@@ -154,7 +154,7 @@ export class Engine {
             }
         }
         
-        this.undos[this.undoPosition] = this.ca.colors;
+        this.undos[this.undoPosition] = Float32Array.from(this.ca.colors);
         this.undoPosition = (this.undoPosition + 1) % this.undoSize;
         this.undoMax++;
         this.applyColors();
@@ -164,9 +164,18 @@ export class Engine {
 
     applyColors() {
         this.ca.applyColors();
-        console.log("applying colors", this.ca.colors, this.ca.colors.length/9);
-        this.g.setAttribute("color", new THREE.Float32BufferAttribute(this.ca.colors, 3));
-        this.m.needsUpdate = true;
+        // reuse one GPU buffer: replace values in place instead of creating a new attribute each step
+        const src = this.ca.colors;
+        let attr = this.g.getAttribute("color");
+        if (!attr || attr.array.length !== src.length) {
+            if (attr) attr.dispose();
+            attr = new THREE.Float32BufferAttribute(new Float32Array(src.length), 3);
+            attr.setUsage(THREE.DynamicDrawUsage);
+            this.g.setAttribute("color", attr);
+            this.m.needsUpdate = true;
+        }
+        attr.array.set(src);
+        attr.needsUpdate = true;
     }
 
     undo() {
